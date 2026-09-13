@@ -81,14 +81,14 @@ body:
         Creator SDK or Banter version:
         Tried in the Editor, headset or multiplayer:
 
-  - type: upload
+  - type: textarea
     id: package
     attributes:
       label: Upload your files (optional)
-      description: Put a .unitypackage or source files inside a ZIP, up to 25 MB. For larger files, use the link box below. A guide can be text-only.
+      description: Put a .unitypackage or source files inside a ZIP, up to 25 MB. Click this box, then drag in the ZIP or use the attachment button. For larger files, use the link box below. A guide can be text-only.
+      placeholder: Drop your ZIP here, or leave this blank if you are sharing a link or guide.
     validations:
       required: false
-      accept: ".zip,.gz,.tar.gz,.txt,.json"
 
   - type: input
     id: source-link
@@ -97,14 +97,14 @@ body:
       description: Use this instead of an upload, or to credit the original post. Prefer a specific version. Maintainers will not automatically copy linked files.
       placeholder: https://...
 
-  - type: upload
+  - type: textarea
     id: screenshots
     attributes:
       label: Show what it does (optional)
-      description: Add a screenshot or graph preview. PNG, JPG, GIF or WebP, up to 10 MB each. Remove private details first.
+      description: Click this box, then paste or drag in a screenshot or graph preview. Use PNG, JPG or GIF, up to 10 MB each. Remove private details first.
+      placeholder: Paste or drop an image here, or leave this blank.
     validations:
       required: false
-      accept: ".png,.jpg,.jpeg,.gif,.webp"
 
   - type: textarea
     id: instructions

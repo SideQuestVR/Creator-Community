@@ -10,10 +10,12 @@ You need a GitHub account, but not Git, the command line or your own repository.
 The form creates a public submission issue. A maintainer handles review and can
 prepare the pull request; a bot does not automatically publish or execute files.
 
-Put `.unitypackage` or source files inside a ZIP for upload. GitHub's form upload
-limits are 25 MB per ZIP and 10 MB per image. For a larger package, provide a
-versioned download link instead. A recipe can be text-only. See
-[GitHub's upload documentation](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema#upload).
+Put `.unitypackage` or source files inside a ZIP for upload. Click the form's
+file or screenshot box, then drag in your attachment or use its attachment
+button. GitHub's attachment limits are 25 MB per ZIP and 10 MB per image. For a
+larger package, provide a versioned download link instead. A recipe can be
+text-only. See
+[GitHub's attachment documentation](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/attaching-files).
 
 If you are unsure about versions or licensing, choose the help option or say
 not sure. This does not grant redistribution rights: licence and permission
