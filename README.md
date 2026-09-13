@@ -1,4 +1,10 @@
-# Creator Community
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/sidequest-logo-white.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/sidequest-logo-black.png">
+  <img alt="SideQuest" src="assets/sidequest-logo-black.png" width="220">
+</picture>
+
+# SideQuest Creator Community
 
 A community collection of recipes, prefabs, Visual Scripting graphs, plugins
 and reusable tools for SideQuest creators.
@@ -6,6 +12,13 @@ and reusable tools for SideQuest creators.
 Small, useful contributions belong here too: a spawn-point prefab, a working
 interaction graph, a short guide, or an Editor utility. A contribution does not
 need to be a full plugin or have its own repository.
+
+## [Share a creation](https://github.com/SideQuestVR/Creator-Community/issues/new?template=contribution.yml)
+
+Tell us what it does, add a ZIP or link, and include a screenshot if you have one.
+No Git, terminal or pull request experience needed. Sign in to GitHub to submit;
+a maintainer will help with the listing and PR. Not sure about versions or a
+licence? Say so in the form. Submissions and uploaded files are public.
 
 **Status:** the directory and contribution process are being established.
 There are no published packages yet. Creator Hub browsing and installation are
@@ -27,10 +40,10 @@ AI assistance is not a quality or safety certification.
 
 ## Contribute
 
-**No Git experience?** [Open a contribution proposal](https://github.com/SideQuestVR/Creator-Community/issues/new?template=contribution.md).
-Describe what you made and provide a link to the files, repository or original
-discussion. A maintainer can help prepare the listing. If you cannot share a
-public download, say so in the proposal and arrange a reviewed handoff first.
+**No Git experience?** Use the [guided submission form](https://github.com/SideQuestVR/Creator-Community/issues/new?template=contribution.yml).
+Attach a ZIP containing your package, or link to the exact version or original
+discussion. Instructions-only contributions are welcome. This creates a public
+proposal for review, not a PR or an automatically published package.
 
 **Comfortable with GitHub?** Submit a pull request with a versioned contribution
 folder and its listing. See [CONTRIBUTING.md](CONTRIBUTING.md) and the
@@ -70,4 +83,5 @@ alone does not prove in-headset or multiplayer behavior.
 There are no fees or commissions. This repository's original directory
 documentation and tooling use the [MIT licence](LICENSE). **Contributed packages
 retain their own explicitly supplied licences.** Never assume the repository's
-licence grants rights to a third-party package or linked download.
+licence grants rights to a third-party package or linked download. The official
+[SideQuest brand assets](assets/README.md) are excluded from the MIT licence.

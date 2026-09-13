@@ -1,11 +1,26 @@
-# Contributing
+# Share With SideQuest Creator Community
 
 Contributions can be small. A useful prefab, graph, illustrated recipe or Editor
 helper is enough. Keep the submission focused on one reusable result.
 
 ## Propose A Contribution
 
-Open a contribution issue or submit a pull request. Include:
+Use the [Share a creation form](https://github.com/SideQuestVR/Creator-Community/issues/new?template=contribution.yml).
+You need a GitHub account, but not Git, the command line or your own repository.
+The form creates a public submission issue. A maintainer handles review and can
+prepare the pull request; a bot does not automatically publish or execute files.
+
+Put `.unitypackage` or source files inside a ZIP for upload. GitHub's form upload
+limits are 25 MB per ZIP and 10 MB per image. For a larger package, provide a
+versioned download link instead. A recipe can be text-only. See
+[GitHub's upload documentation](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema#upload).
+
+If you are unsure about versions or licensing, choose the help option or say
+not sure. This does not grant redistribution rights: licence and permission
+must be resolved before a package enters the directory. Do not upload files
+while permission is pending. Attachments are public, not a private review inbox.
+
+For the form or a direct pull request, include what you know:
 
 - What it does, its author and the original source/discussion link where available.
 - The files, or a public link to the exact version to review.

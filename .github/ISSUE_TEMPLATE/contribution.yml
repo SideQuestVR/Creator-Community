@@ -1,0 +1,162 @@
+name: Share a creation
+description: Share a prefab, graph, guide or tool with SideQuest creators. No Git experience needed.
+title: "[Creation]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/SideQuestVR/Creator-Community/main/assets/sidequest-logo-white.png">
+          <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/SideQuestVR/Creator-Community/main/assets/sidequest-logo-black.png">
+          <img alt="SideQuest" src="https://raw.githubusercontent.com/SideQuestVR/Creator-Community/main/assets/sidequest-logo-black.png" width="220">
+        </picture>
+
+        ## SideQuest Creator Community
+        Share something useful, even if it is small. A prefab, a few nodes or a short guide all count.
+
+        Fill in what you know. We can help with packaging, version details and the pull request.
+        **This submission and any uploaded files are public.** Leave out private project data, passwords and paid assets you cannot redistribute.
+
+  - type: input
+    id: creation-name
+    attributes:
+      label: What is it called?
+      placeholder: "For example: Start Location"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: What are you sharing?
+      options:
+        - Prefab or scene object
+        - Visual Scripting graph
+        - Guide or recipe
+        - Plugin or SDK extension
+        - Editor tool or MCP-assisted utility
+        - Not sure yet
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What does it help people do?
+      description: A sentence or two is enough to get started.
+      placeholder: "For example: Place this object in your scene to choose where players start."
+    validations:
+      required: true
+
+  - type: input
+    id: author
+    attributes:
+      label: Who should get the credit?
+      description: Your name or handle, and any co-authors. No email address needed.
+      placeholder: Your creator name
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sdk
+    attributes:
+      label: Where is it intended to work?
+      description: Select all that apply. Tested versions can go in the next box.
+      multiple: true
+      options:
+        - Creator SDK / Altspace
+        - Banter SDK
+        - Unity without a specific SDK
+        - Not sure yet
+    validations:
+      required: true
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Versions and testing (optional)
+      description: Tell us what you actually tried. It is fine to say untested or not sure.
+      placeholder: |
+        Unity version:
+        Creator SDK or Banter version:
+        Tried in the Editor, headset or multiplayer:
+
+  - type: upload
+    id: package
+    attributes:
+      label: Upload your files (optional)
+      description: Put a .unitypackage or source files inside a ZIP, up to 25 MB. For larger files, use the link box below. A guide can be text-only.
+    validations:
+      required: false
+      accept: ".zip,.gz,.tar.gz,.txt,.json"
+
+  - type: input
+    id: source-link
+    attributes:
+      label: Download, repository or original discussion link (optional)
+      description: Use this instead of an upload, or to credit the original post. Prefer a specific version. Maintainers will not automatically copy linked files.
+      placeholder: https://...
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Show what it does (optional)
+      description: Add a screenshot or graph preview. PNG, JPG, GIF or WebP, up to 10 MB each. Remove private details first.
+    validations:
+      required: false
+      accept: ".png,.jpg,.jpeg,.gif,.webp"
+
+  - type: textarea
+    id: instructions
+    attributes:
+      label: How do people use it? (optional)
+      description: Include any required packages, setup or removal steps, and known issues. You can also link to existing instructions.
+      placeholder: "For example: Import the package, then place the prefab at your intended starting position."
+
+  - type: dropdown
+    id: code-content
+    attributes:
+      label: Does it include scripts or programs?
+      description: This helps us review it. Visual Scripting graphs are welcome too.
+      options:
+        - No C# scripts or programs (assets, graphs or instructions only)
+        - Yes, Unity C# scripts
+        - Yes, a program or other executable code
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: licence
+    attributes:
+      label: What is the licence situation?
+      description: No licence is selected for you. We can discuss this before publishing a package.
+      options:
+        - It already has a licence (add details below)
+        - I made it and need help choosing a licence
+        - Permission is still pending (proposal or link only, no file uploads)
+    validations:
+      required: true
+
+  - type: textarea
+    id: licence-details
+    attributes:
+      label: Licence or permission details (optional)
+      description: Link to the existing licence, give its name, or explain what you need help with. Mention third-party assets and their licences.
+
+  - type: checkboxes
+    id: sharing-checks
+    attributes:
+      label: Before you share
+      options:
+        - label: I have permission to share every file and image I upload here, and have removed private information.
+          required: true
+        - label: I understand this is a public submission for review, not automatic approval or installation.
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        **What happens next?** Submit with GitHub's button below. A maintainer will review the proposal, ask for anything missing and prepare the package/listing pull request when it is ready. You do not need to create one yourself.
+
+        [Contribution guide](https://github.com/SideQuestVR/Creator-Community/blob/main/CONTRIBUTING.md) | [Browse proposals](https://github.com/SideQuestVR/Creator-Community/issues)
