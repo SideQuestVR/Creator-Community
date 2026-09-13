@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Creator Community Listing",
+  "description": "Version-specific community metadata, not an installation authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "version", "name", "category", "description", "author", "license", "licensePath", "instructionsPath", "compatibility", "dependencies", "includesCode", "scope", "testNotes"],
+  "properties": {
+    "$schema": { "type": "string", "maxLength": 1024 },
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$", "maxLength": 100 },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$", "maxLength": 80 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "category": { "enum": ["prefab", "graph", "recipe", "plugin", "community-tool"] },
+    "description": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "url": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "license": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "licensePath": { "$ref": "#/$defs/repositoryPath" },
+    "instructionsPath": { "$ref": "#/$defs/repositoryPath" },
+    "sourceUrl": { "$ref": "#/$defs/httpsUrl" },
+    "discussionUrl": { "$ref": "#/$defs/httpsUrl" },
+    "previewImage": { "oneOf": [{ "$ref": "#/$defs/repositoryPath" }, { "$ref": "#/$defs/httpsUrl" }] },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unity", "creatorSdk", "banterSdk"],
+      "properties": {
+        "unity": { "$ref": "#/$defs/versions" },
+        "creatorSdk": { "$ref": "#/$defs/versions" },
+        "banterSdk": { "$ref": "#/$defs/versions" }
+      }
+    },
+    "dependencies": { "type": "array", "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200 } },
+    "includesCode": { "type": "boolean" },
+    "scope": { "enum": ["editor-only", "runtime", "both", "instructions-only"] },
+    "aiAssisted": { "type": "boolean" },
+    "testNotes": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "download": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["byteLength", "sha256"],
+      "oneOf": [{ "required": ["path"], "not": { "required": ["url"] } }, { "required": ["url"], "not": { "required": ["path"] } }],
+      "properties": {
+        "path": { "$ref": "#/$defs/repositoryPath" },
+        "url": { "$ref": "#/$defs/httpsUrl" },
+        "byteLength": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  },
+  "$defs": {
+    "repositoryPath": { "type": "string", "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)+$", "maxLength": 500 },
+    "httpsUrl": { "type": "string", "format": "uri", "pattern": "^https://", "maxLength": 2048 },
+    "versions": { "type": "array", "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 80 } }
+  }
+}
