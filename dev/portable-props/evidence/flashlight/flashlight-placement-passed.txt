@@ -1,0 +1,1 @@
+Eight checks passed: compiled menu, fixture layer, unique IDs, grip-only layer, no auto-save, Undo, IDs and layers after reopen.

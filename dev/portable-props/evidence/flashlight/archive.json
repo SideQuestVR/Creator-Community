@@ -1,0 +1,17 @@
+{
+  "name": "Flashlight",
+  "byteLength": 61906,
+  "sha256": "243af901185ca51911ce1086f688e36dd39db831660d71299c04f7ee896c042d",
+  "assets": [
+    "Assets/CreatorCommunity/Flashlight/Editor/CreatorFlashlightMenu.cs",
+    "Assets/CreatorCommunity/Flashlight/Materials/Casing.mat",
+    "Assets/CreatorCommunity/Flashlight/Flashlight.prefab",
+    "Assets/CreatorCommunity/Flashlight/Materials/Lens.mat",
+    "Assets/CreatorCommunity/Flashlight/Materials/Bezel.mat",
+    "Assets/CreatorCommunity/Flashlight/LICENSE.txt",
+    "Assets/CreatorCommunity/Flashlight/README.md",
+    "Assets/CreatorCommunity/Flashlight/Materials/Grip.mat",
+    "Assets/CreatorCommunity/Flashlight/VisualScripting/FlashlightToggle.asset",
+    "Assets/CreatorCommunity/Flashlight/Materials/LensGlow.mat"
+  ]
+}

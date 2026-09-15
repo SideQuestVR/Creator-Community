@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../schemas/listing.schema.json",
+  "schemaVersion": 1,
+  "id": "bobworks.flashlight",
+  "version": "0.1.0",
+  "name": "Flashlight",
+  "category": "prefab",
+  "description": "An original grabbable watchtower torch with a cool-white spotlight and glowing lens. Grab with either hand and press the trigger to switch it on or off. Starts mounted without gravity; the first grab enables physics. No third-party model or textures.",
+  "author": {
+    "name": "BOBWORKS-XR",
+    "url": "https://github.com/BOBWORKS-XR"
+  },
+  "license": "MIT",
+  "licensePath": "packages/bobworks.flashlight/0.1.0/LICENSE.txt",
+  "instructionsPath": "packages/bobworks.flashlight/0.1.0/README.md",
+  "sourceUrl": "https://github.com/SideQuestVR/Creator-Community/tree/fe07bad3c5e8fffdd6ddd0f33a83bea2d3ae5354/dev/portable-props",
+  "compatibility": {
+    "unity": [
+      "6000.3.21f1"
+    ],
+    "creatorSdk": [
+      "4.0.14"
+    ],
+    "banterSdk": []
+  },
+  "dependencies": [
+    "Creator SDK 4.0.14, configured with the Grabbable layer",
+    "Universal Render Pipeline 17.3.0 with additional lights enabled",
+    "Unity Visual Scripting 1.9.1"
+  ],
+  "includesCode": true,
+  "scope": "both",
+  "aiAssisted": true,
+  "testNotes": "Windows Editor verification on 2026-09-15: 27 flashlight graph/configuration checks passed on the exported and reimported prefab; eight placement checks passed, including Undo, unique IDs, grip-only layer remapping and save/reopen persistence. The 68 previous portable-prop checks also passed alongside it. Actual spotlight on/off render comparison illuminated 33,242 pixels with mean luminance increase 0.041908. SDK allow-list and archive dependency checks passed. Matches the Forest flashlight's grip, mass, initial gravity, trigger and beam configuration; replacement visuals use original Unity primitives. Ownership calls are bypassed only in cloned test graphs. Native controller feel, hosted Quest, multiplayer and other operating systems remain unverified. Light state is local, not advertised as network-synchronised. The preview shows the actual prefab. See dev/portable-props/FLASHLIGHT-REVIEW.md.",
+  "usage": "Import into a configured Creator SDK project, then choose Tools > Creator Community > Add > Flashlight. Place it and save the scene yourself. Grab with either hand and press/release the trigger to toggle. Dropping leaves the light state unchanged. Enable Use Gravity on the root if it should fall immediately instead of waiting for its first grab.",
+  "contents": [
+    "Assets/CreatorCommunity/Flashlight/Editor/CreatorFlashlightMenu.cs",
+    "Assets/CreatorCommunity/Flashlight/Materials/Casing.mat",
+    "Assets/CreatorCommunity/Flashlight/Flashlight.prefab",
+    "Assets/CreatorCommunity/Flashlight/Materials/Lens.mat",
+    "Assets/CreatorCommunity/Flashlight/Materials/Bezel.mat",
+    "Assets/CreatorCommunity/Flashlight/LICENSE.txt",
+    "Assets/CreatorCommunity/Flashlight/README.md",
+    "Assets/CreatorCommunity/Flashlight/Materials/Grip.mat",
+    "Assets/CreatorCommunity/Flashlight/VisualScripting/FlashlightToggle.asset",
+    "Assets/CreatorCommunity/Flashlight/Materials/LensGlow.mat"
+  ],
+  "previewImage": "packages/bobworks.flashlight/0.1.0/preview.png",
+  "reviewStatus": "listed",
+  "download": {
+    "path": "packages/bobworks.flashlight/0.1.0/Flashlight-0.1.0.unitypackage",
+    "byteLength": 61906,
+    "sha256": "243af901185ca51911ce1086f688e36dd39db831660d71299c04f7ee896c042d"
+  }
+}

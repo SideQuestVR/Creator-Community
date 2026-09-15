@@ -1,0 +1,1 @@
+Actual Unity package import and script reload, 68 existing-prop checks, 27 flashlight checks and placement checks passed.
