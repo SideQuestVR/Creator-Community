@@ -1,0 +1,4 @@
+Shader: OptiC/Cause Water
+Supported on editor GPU: True
+Property checks: 6
+Shader errors: 
