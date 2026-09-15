@@ -1,0 +1,125 @@
+// SideQuest Lighting Tools - MIT
+using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+namespace SideQuest.LightingTools.Core
+{
+    /// <summary>
+    /// Per-project settings for the whole suite.
+    ///
+    /// The prior-art tools kept every knob as a private field on an EditorWindow, so each
+    /// value reset the moment the window closed. Storing them once here fixes that for all
+    /// four tools at the same time.
+    ///
+    /// Lives in ProjectSettings/, not Assets/: it is project configuration, it should be
+    /// diffable in version control, and it must never end up inside a shipped AssetBundle.
+    /// </summary>
+    [FilePath("ProjectSettings/SideQuestLightingTools.asset", FilePathAttribute.Location.ProjectFolder)]
+    public sealed class SqSettings : ScriptableSingleton<SqSettings>
+    {
+        // ---- budgets: the ceilings a decision plan can never raise for itself ----
+
+        [Tooltip("Hard ceiling on probes a single apply may place. Quest-oriented default.")]
+        public int maxLightProbes = 2000;
+
+        [Tooltip("Hard ceiling on reflection probes in one scene.")]
+        public int maxReflectionProbes = 64;
+
+        [Tooltip("Total baked reflection cubemap memory before RP020_MEMORY_BUDGET is raised, in MB.")]
+        public float reflectionProbeMemoryBudgetMB = 24f;
+
+        [Tooltip("Lightmap atlases allowed before LB030_ATLAS_BUDGET is raised.")]
+        public int maxLightmapAtlases = 2;
+
+        [Tooltip("Atlas edge length the budget estimate assumes.")]
+        public int lightmapAtlasSize = 1024;
+
+        [Tooltip("Occlusion umbra data size that triggers a warning, in MB.")]
+        public float occlusionDataBudgetMB = 8f;
+
+        // ---- light probe defaults ----
+
+        [Tooltip("Base probe spacing in metres. Smaller means more probes - one semantic everywhere.")]
+        public float probeSpacing = 2.0f;
+
+        [Tooltip("Probes closer together than this are merged, keeping the medoid of each cell.")]
+        public float probeMergeDistance = 0.5f;
+
+        [Tooltip("Heights above the floor at which probe layers are placed. A single layer lights VR badly.")]
+        public float[] probeLayerHeights = { 0.3f, 1.6f, 2.6f };
+
+        [Tooltip("Extra probes are placed within this distance of a NavMesh or geometry edge.")]
+        public float probeEdgeBand = 0.6f;
+
+        [Tooltip("Probe spacing is never reduced below this, whatever the density heuristics ask for.")]
+        public float probeMinSpacing = 0.5f;
+
+        // ---- reflection probe defaults ----
+
+        [Tooltip("Height above the zone floor at which a reflection probe is centred.")]
+        public float reflectionProbeEyeHeight = 1.6f;
+
+        [Tooltip("Reflection box bounds are inflated by this much beyond the zone bounds.")]
+        public float reflectionBoxPadding = 0.1f;
+
+        // ---- occlusion defaults ----
+
+        [Tooltip("An object is a viable occluder only if its second-largest bounds axis reaches this. Thin walls qualify; small props do not.")]
+        public float minOccluderFaceSize = 1.5f;
+
+        // ---- behaviour ----
+
+        [Tooltip("Log extra non-machine-readable detail to the console.")]
+        public bool verboseDetail;
+
+        [Tooltip("Report detail level written by Analyze: summary, zones or full.")]
+        public string defaultReportDetail = "summary";
+
+        [Tooltip("Byte ceiling for a written report before it degrades to a lower detail level.")]
+        public int reportMaxBytes = 65536;
+
+        // ---- shader gloss overrides ----
+
+        [Serializable]
+        public struct ShaderGlossOverride
+        {
+            public string shaderName;
+            public float smoothness;
+            public float metallic;
+            public bool usesEnvironmentReflections;
+        }
+
+        [Tooltip("Manual answers for shaders whose gloss cannot be read automatically. Never guess silently.")]
+        public List<ShaderGlossOverride> shaderGlossOverrides = new List<ShaderGlossOverride>();
+
+        public bool TryGetGlossOverride(string shaderName, out ShaderGlossOverride result)
+        {
+            result = default(ShaderGlossOverride);
+            if (string.IsNullOrEmpty(shaderName)) return false;
+
+            for (int i = 0; i < shaderGlossOverrides.Count; i++)
+            {
+                if (string.Equals(shaderGlossOverrides[i].shaderName, shaderName, StringComparison.Ordinal))
+                {
+                    result = shaderGlossOverrides[i];
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>Persists to ProjectSettings/. Call after any mutation.</summary>
+        public void Persist()
+        {
+            SqLog.VerboseDetail = verboseDetail;
+            Save(true);
+        }
+
+        void OnEnable()
+        {
+            SqLog.VerboseDetail = verboseDetail;
+        }
+    }
+}
