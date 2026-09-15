@@ -102,11 +102,17 @@ namespace SideQuest.LightingTools.LightProbes
         /// sheet at 0.25m lights the floor correctly and the face not at all - and a flat
         /// set tetrahedralises into slivers, which interpolates badly in every direction.
         /// </summary>
-        public static void EmitColumn(Vector3 floorPoint, float[] layerHeights, float ceilingHeight, List<Vector3> output)
+        public static void EmitColumn(
+            Vector3 floorPoint,
+            float[] layerHeights,
+            float ceilingHeight,
+            List<Vector3> output,
+            System.Func<Vector3, bool> isValid = null)
         {
             if (layerHeights == null || layerHeights.Length == 0)
             {
-                output.Add(floorPoint + Vector3.up * 0.3f);
+                Vector3 single = floorPoint + Vector3.up * 0.3f;
+                if (isValid == null || isValid(single)) output.Add(single);
                 return;
             }
 
@@ -119,7 +125,19 @@ namespace SideQuest.LightingTools.LightProbes
                 float height = layerHeights[i];
                 if (emitted && height > ceilingHeight) break;
 
-                output.Add(floorPoint + Vector3.up * height);
+                Vector3 position = floorPoint + Vector3.up * height;
+
+                // A "floor" is any surface with space above it, which includes the top of
+                // every crate and pane in the scene. Stacking a full column on a 2.5m prop
+                // puts the upper layer through the ceiling, so each layer is checked
+                // against real space rather than trusted because the one below it fitted.
+                if (isValid != null && !isValid(position))
+                {
+                    if (emitted) break; // the column has left usable space; stop climbing
+                    continue;
+                }
+
+                output.Add(position);
                 emitted = true;
             }
         }

@@ -91,17 +91,31 @@ namespace SideQuest.LightingTools.Core
 
     public static class SceneScanner
     {
+        /// <summary>How many voxels the zone grid may use. Roughly a second of CheckBox calls.</summary>
+        public const int ZoneCellBudget = 1000000;
+
         /// <summary>
-        /// Zone segmentation needs a finer grid than the heuristics do.
+        /// Voxel size for zone segmentation: the finest the cell budget affords.
         ///
-        /// SceneScale.CellSize is tuned to object size and lands around 2m in a room-scale
-        /// scene, which cannot resolve a 0.9m doorway - and a doorway that does not resolve
-        /// merges two rooms into one zone. Quartering it, clamped to a sane band, keeps
-        /// doorways visible without letting a large scene explode the voxel count.
+        /// This deliberately ignores renderer size. Deriving it from the median renderer
+        /// extent seems reasonable until the renderers ARE the architecture - a test scene
+        /// of 8m wall and floor slabs reports a median extent of 8m and asks for voxels
+        /// coarser than the rooms it is meant to resolve, so every room merges into one
+        /// zone and every per-room decision in the suite collapses.
+        ///
+        /// Scene volume is the honest input: it is what actually decides how many voxels a
+        /// given resolution costs. The floor of 0.25m is what resolves a doorway; the
+        /// ceiling of 4m keeps a landscape from pretending to room-scale precision.
         /// </summary>
         public static float ZoneCellSize(SceneScale scale)
         {
-            return Mathf.Clamp(scale.CellSize * 0.25f, 0.25f, 2f);
+            if (!scale.HasBounds) return 1f;
+
+            Vector3 size = scale.WorldBounds.size;
+            double volume = (double)Mathf.Max(size.x, 1f) * Mathf.Max(size.y, 1f) * Mathf.Max(size.z, 1f);
+
+            float affordable = (float)System.Math.Pow(volume / ZoneCellBudget, 1.0 / 3.0);
+            return Mathf.Clamp(affordable, 0.25f, 4f);
         }
 
         public static SceneScan Scan(SqProblemList problems, bool includeGrid = true)
@@ -110,6 +124,12 @@ namespace SideQuest.LightingTools.Core
             var scan = new SceneScan();
 
             MaterialFacts.ResetCache();
+
+            // Everything downstream that asks a physics question - the occupancy grid,
+            // floor raycasts, the reflection probe escape test - reads the physics scene,
+            // which lags the transform hierarchy until it is synced. Doing it once here
+            // means no individual query has to remember.
+            Physics.SyncTransforms();
 
             scan.Scene = SceneManager.GetActiveScene();
             scan.SceneName = string.IsNullOrEmpty(scan.Scene.name) ? "Untitled" : scan.Scene.name;

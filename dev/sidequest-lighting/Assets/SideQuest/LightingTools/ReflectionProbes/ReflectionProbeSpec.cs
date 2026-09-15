@@ -173,7 +173,7 @@ namespace SideQuest.LightingTools.ReflectionProbes
             {
                 validation.Note(SqSeverity.Warn, field + ".position",
                     "position is far outside the scene bounds; entry skipped",
-                    position.ToString("0.#"), null);
+                    SqFormat.Vec(position), null);
                 return null;
             }
 
@@ -208,7 +208,7 @@ namespace SideQuest.LightingTools.ReflectionProbes
             {
                 validation.Note(SqSeverity.Warn, field + ".farClip",
                     "far clip was not beyond near clip; it was pushed out",
-                    spec.FarClip.ToString("0.##"), (spec.NearClip * 100f).ToString("0.##"));
+                    SqFormat.Num(spec.FarClip), SqFormat.Num(spec.NearClip * 100f));
                 spec.FarClip = spec.NearClip * 100f;
             }
 

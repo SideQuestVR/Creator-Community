@@ -24,6 +24,9 @@ namespace SideQuest.LightingTools.Core
         /// <summary>0 = fully enclosed room, 1 = open space. Drives probe density and probe sizing.</summary>
         public float Openness;
 
+        /// <summary>True when this zone is the open air around the scene rather than a room.</summary>
+        public bool IsExterior;
+
         public float MeanSmoothness;
         public float MaxSmoothness;
         public float MetallicFraction;
@@ -50,45 +53,94 @@ namespace SideQuest.LightingTools.Core
     }
 
     /// <summary>
-    /// Segments free space into zones by erosion.
+    /// Segments enclosed space into zones by erosion.
     ///
-    /// A plain flood fill of free space is useless here: any open doorway merges every
-    /// room in a building into one component. Eroding free space first closes narrow
-    /// passages, so the surviving cores are the rooms; those cores are then grown back
-    /// over the full free space to label every cell. The passages that vanished during
-    /// erosion are exactly the doorways, and their width is what occlusion culling needs
-    /// for smallestHole.
+    /// A plain flood fill of free space is useless here for two separate reasons. Any open
+    /// doorway merges the rooms it connects, and the open air around a building connects
+    /// every room to every other room around the outside.
+    ///
+    /// So the exterior is excluded first (OccupancyGrid marks it), then what remains is
+    /// eroded to close narrow passages, and the surviving cores are grown back to label
+    /// every interior cell. The passages that vanished during erosion are exactly the
+    /// doorways, and their width is what occlusion culling needs for smallestHole.
     /// </summary>
     public static class ZoneSegmenter
     {
-        /// <summary>Cores smaller than this are absorbed rather than becoming their own zone.</summary>
-        public const int MinCoreCells = 8;
-
         public const int MaxZones = 64;
 
-        public static List<Zone> Segment(OccupancyGrid grid, int erosionPasses = 1)
+        /// <summary>
+        /// Smallest volume that counts as a room, in cubic metres.
+        ///
+        /// Expressed as a volume rather than a cell count so it means the same thing at
+        /// every voxel resolution. A fixed cell count would call a cupboard a room on a
+        /// fine grid and discard a hall on a coarse one.
+        /// </summary>
+        public const float MinCoreVolume = 1.0f;
+
+        /// <summary>
+        /// Passages narrower than this are treated as doorways and closed by erosion.
+        ///
+        /// Each pass removes one cell from every surface, so this converts to a pass count
+        /// against the voxel size. Real interior doors are 0.8m to 1.0m, so eroding half a
+        /// metre from each side closes them while leaving any actual room standing.
+        /// </summary>
+        public const float DoorwayReach = 0.5f;
+
+        public static int ErosionPassesFor(float cellSize)
+        {
+            return Mathf.Clamp(Mathf.CeilToInt(DoorwayReach / Mathf.Max(cellSize, 0.01f)), 1, 8);
+        }
+
+        public static int MinCoreCellsFor(float cellSize)
+        {
+            float cellVolume = cellSize * cellSize * cellSize;
+            return Mathf.Max(4, Mathf.CeilToInt(MinCoreVolume / Mathf.Max(cellVolume, 0.0001f)));
+        }
+
+        public static List<Zone> Segment(OccupancyGrid grid, int erosionPasses = -1)
+        {
+            if (grid == null || grid.CellCount == 0) return new List<Zone>();
+
+            int passes = erosionPasses > 0 ? erosionPasses : ErosionPassesFor(grid.CellSize);
+
+            // Interiors first. A scene with buildings gets rooms; a scene that is entirely
+            // open gets nothing here, which is correct rather than a failure - so fall back
+            // to segmenting all free space so outdoor scenes still produce usable zones.
+            List<Zone> zones = SegmentPass(grid, passes, true);
+            if (zones.Count > 0) return zones;
+
+            zones = SegmentPass(grid, passes, false);
+            for (int i = 0; i < zones.Count; i++) zones[i].IsExterior = true;
+            return zones;
+        }
+
+        static List<Zone> SegmentPass(OccupancyGrid grid, int passes, bool interiorOnly)
         {
             var zones = new List<Zone>();
-            if (grid == null || grid.CellCount == 0) return zones;
 
-            bool[] core = Erode(grid, erosionPasses);
-            int[] labels = LabelCores(grid, core);
-            GrowLabels(grid, labels);
+            bool[] core = Erode(grid, passes, interiorOnly);
+            int[] labels = LabelCores(grid, core, MinCoreCellsFor(grid.CellSize));
+            GrowLabels(grid, labels, interiorOnly);
             BuildZones(grid, labels, zones);
             FindConnections(grid, labels, zones);
 
             return zones;
         }
 
-        /// <summary>Removes free cells adjacent to solid, repeatedly. Closes doorways; leaves room cores.</summary>
-        static bool[] Erode(OccupancyGrid grid, int passes)
+        static bool Included(OccupancyGrid grid, int x, int y, int z, bool interiorOnly)
+        {
+            return interiorOnly ? grid.IsInterior(x, y, z) : grid.IsFree(x, y, z);
+        }
+
+        /// <summary>Removes cells adjacent to anything excluded, repeatedly. Closes doorways; leaves room cores.</summary>
+        static bool[] Erode(OccupancyGrid grid, int passes, bool interiorOnly)
         {
             var current = new bool[grid.CellCount];
 
             for (int x = 0; x < grid.SizeX; x++)
                 for (int y = 0; y < grid.SizeY; y++)
                     for (int z = 0; z < grid.SizeZ; z++)
-                        current[grid.IndexOf(x, y, z)] = grid.IsFree(x, y, z);
+                        current[grid.IndexOf(x, y, z)] = Included(grid, x, y, z, interiorOnly);
 
             for (int pass = 0; pass < passes; pass++)
             {
@@ -119,7 +171,7 @@ namespace SideQuest.LightingTools.Core
         }
 
         /// <summary>Connected components of the eroded cores. -1 means unlabelled.</summary>
-        static int[] LabelCores(OccupancyGrid grid, bool[] core)
+        static int[] LabelCores(OccupancyGrid grid, bool[] core, int minCoreCells)
         {
             var labels = new int[grid.CellCount];
             for (int i = 0; i < labels.Length; i++) labels[i] = -1;
@@ -159,9 +211,9 @@ namespace SideQuest.LightingTools.Core
                             }
                         }
 
-                        // A core of a handful of cells is a nook, not a room. Unlabel it
-                        // and let the region growing pass fold it into a real neighbour.
-                        if (component.Count < MinCoreCells)
+                        // Too small to be a room. Unlabel it and let region growing fold it
+                        // into a real neighbour rather than reporting a cupboard as a zone.
+                        if (component.Count < minCoreCells)
                         {
                             for (int i = 0; i < component.Count; i++) labels[component[i]] = -1;
                         }
@@ -175,10 +227,10 @@ namespace SideQuest.LightingTools.Core
         }
 
         /// <summary>
-        /// Multi-source BFS from every labelled core over all free cells, so each free
-        /// cell joins its nearest room. This is what puts the doorway cells back.
+        /// Multi-source BFS from every labelled core over the included cells, so each one
+        /// joins its nearest room. This is what puts the doorway cells back.
         /// </summary>
-        static void GrowLabels(OccupancyGrid grid, int[] labels)
+        static void GrowLabels(OccupancyGrid grid, int[] labels, bool interiorOnly)
         {
             var queue = new Queue<Vector3Int>();
 
@@ -197,7 +249,7 @@ namespace SideQuest.LightingTools.Core
                 {
                     Vector3Int n = OccupancyGrid.Neighbour(c, face);
                     if (!grid.InRange(n.x, n.y, n.z)) continue;
-                    if (grid.IsSolid(n.x, n.y, n.z)) continue;
+                    if (!Included(grid, n.x, n.y, n.z, interiorOnly)) continue;
 
                     int index = grid.IndexOf(n.x, n.y, n.z);
                     if (labels[index] != -1) continue;

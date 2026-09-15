@@ -112,15 +112,16 @@ namespace SideQuest.LightingTools.Core
             if (float.IsNaN(given) || float.IsInfinity(given))
             {
                 Note(SqSeverity.Warn, field, "value was not finite; used the minimum",
-                    given.ToString(), min.ToString());
+                    SqFormat.Num(given), SqFormat.Num(min));
                 return min;
             }
 
             float used = Mathf.Clamp(given, min, max);
             if (!Mathf.Approximately(used, given))
             {
-                Note(SqSeverity.Warn, field, string.Format("clamped to [{0}, {1}]", min, max),
-                    given.ToString("0.###"), used.ToString("0.###"));
+                Note(SqSeverity.Warn, field,
+                    "clamped to [" + SqFormat.Num(min) + ", " + SqFormat.Num(max) + "]",
+                    SqFormat.Num(given), SqFormat.Num(used));
             }
             return used;
         }
@@ -178,8 +179,8 @@ namespace SideQuest.LightingTools.Core
             if (requested <= budget) return true;
 
             Reject(code, string.Format(
-                "{0} requests {1:0.##}{3} but the configured budget is {2:0.##}{3}. Raise it in the tool settings if that is intended.",
-                field, requested, budget, unit));
+                "{0} requests {1}{3} but the configured budget is {2}{3}. Raise it in the tool settings if that is intended.",
+                field, SqFormat.Num(requested), SqFormat.Num(budget), unit));
             return false;
         }
 

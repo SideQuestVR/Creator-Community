@@ -1,5 +1,6 @@
 // SideQuest Lighting Tools - MIT
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SideQuest.LightingTools.Core
 {
@@ -49,8 +50,18 @@ namespace SideQuest.LightingTools.Core
             Stats.Add(new KeyValuePair<string, string>(key, value));
         }
 
-        public void Stat(string key, int value) { Stat(key, value.ToString()); }
-        public void Stat(string key, float value) { Stat(key, value.ToString("0.###")); }
+        // Invariant culture, always. These are strings inside a JSON document that other
+        // tools parse, and on a German-locale machine the default formatting writes "3,99"
+        // - which is valid text and an invalid number everywhere it is read back.
+        public void Stat(string key, int value)
+        {
+            Stat(key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public void Stat(string key, float value)
+        {
+            Stat(key, value.ToString("0.###", CultureInfo.InvariantCulture));
+        }
 
         public void Own(SqObjectId id)
         {

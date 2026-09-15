@@ -39,17 +39,42 @@ namespace SideQuest.LightingTools.Core
         public int FreeCount { get { return CellCount - SolidCount; } }
         public int CellCount { get { return SizeX * SizeY * SizeZ; } }
 
+        /// <summary>Free cells reachable from the grid boundary - the open air around the scene.</summary>
+        public int ExteriorCount { get; private set; }
+
+        /// <summary>Free cells enclosed by geometry: the interior space zones are built from.</summary>
+        public int InteriorCount { get { return FreeCount - ExteriorCount; } }
+
         bool[] _solid;
+        bool[] _exterior;
+
+        /// <summary>True for free space connected to the outside world. Solid cells are never exterior.</summary>
+        public bool IsExterior(int x, int y, int z)
+        {
+            if (!InRange(x, y, z)) return true;
+            return _exterior[IndexOf(x, y, z)];
+        }
+
+        /// <summary>Free and enclosed - the cells a room is made of.</summary>
+        public bool IsInterior(int x, int y, int z)
+        {
+            if (!InRange(x, y, z)) return false;
+            int index = IndexOf(x, y, z);
+            return !_solid[index] && !_exterior[index];
+        }
 
         public static OccupancyGrid Build(Bounds bounds, float cellSize, IList<RendererFacts> renderers)
         {
             var grid = new OccupancyGrid();
 
-            // Pad by one cell so the outermost surfaces have free space on both sides and
-            // a boundary test does not read off the end of the array.
-            bounds.Expand(cellSize * 2f);
-            grid.WorldBounds = bounds;
             grid.CellSize = ChooseCellSize(bounds, cellSize);
+
+            // Pad by two cells of the FINAL size, so the outermost surfaces have free space
+            // on both sides and a boundary test never reads off the end of the array.
+            // Padding before choosing the size would scale the padding to a value that is
+            // about to change.
+            bounds.Expand(grid.CellSize * 4f);
+            grid.WorldBounds = bounds;
 
             grid.SizeX = Mathf.Max(1, Mathf.CeilToInt(bounds.size.x / grid.CellSize));
             grid.SizeY = Mathf.Max(1, Mathf.CeilToInt(bounds.size.y / grid.CellSize));
@@ -62,7 +87,61 @@ namespace SideQuest.LightingTools.Core
             if (anyCollider) grid.FillFromColliders();
             else grid.FillFromRendererBounds(renderers);
 
+            grid.MarkExterior();
             return grid;
+        }
+
+        /// <summary>
+        /// Flood-fills free space inward from the grid boundary to find what is outside.
+        ///
+        /// Without this, the open air around a building is free space like any other, and
+        /// because it wraps the whole scene it connects every room to every other room
+        /// around the outside. Segmentation then returns one enormous zone containing
+        /// everything, and every per-room decision in the suite silently degrades to a
+        /// scene-wide average.
+        ///
+        /// Outside is not a room, so it is excluded from zones - with the exception that a
+        /// genuinely open scene has nothing but exterior, which ZoneSegmenter handles by
+        /// falling back rather than reporting no zones at all.
+        /// </summary>
+        void MarkExterior()
+        {
+            _exterior = new bool[CellCount];
+            var queue = new Queue<Vector3Int>();
+
+            for (int x = 0; x < SizeX; x++)
+                for (int y = 0; y < SizeY; y++)
+                    for (int z = 0; z < SizeZ; z++)
+                    {
+                        bool onBoundary = x == 0 || y == 0 || z == 0 ||
+                                          x == SizeX - 1 || y == SizeY - 1 || z == SizeZ - 1;
+                        if (!onBoundary || IsSolid(x, y, z)) continue;
+
+                        int index = IndexOf(x, y, z);
+                        if (_exterior[index]) continue;
+
+                        _exterior[index] = true;
+                        ExteriorCount++;
+                        queue.Enqueue(new Vector3Int(x, y, z));
+                    }
+
+            while (queue.Count > 0)
+            {
+                Vector3Int c = queue.Dequeue();
+
+                for (int face = 0; face < 6; face++)
+                {
+                    Vector3Int n = Neighbour(c, face);
+                    if (!InRange(n.x, n.y, n.z) || IsSolid(n.x, n.y, n.z)) continue;
+
+                    int index = IndexOf(n.x, n.y, n.z);
+                    if (_exterior[index]) continue;
+
+                    _exterior[index] = true;
+                    ExteriorCount++;
+                    queue.Enqueue(n);
+                }
+            }
         }
 
         /// <summary>Coarsens the requested cell size until the grid fits inside MaxCells.</summary>
@@ -96,6 +175,16 @@ namespace SideQuest.LightingTools.Core
 
         void FillFromColliders()
         {
+            // The physics scene lags the transform hierarchy until something syncs it. In
+            // play mode that happens every FixedUpdate; in the Editor it may not have
+            // happened since the objects were created or moved, so every query here would
+            // silently test where things used to be.
+            //
+            // The failure is quiet and convincing: a scene built by script and analysed in
+            // the same session reported almost no solid space at all, which reads as a
+            // wide-open scene rather than as a stale query.
+            Physics.SyncTransforms();
+
             // The test box is shrunk slightly so a collider that merely touches a cell
             // boundary does not solidify the cell next to it - that would seal doorways
             // that are exactly one cell wide.

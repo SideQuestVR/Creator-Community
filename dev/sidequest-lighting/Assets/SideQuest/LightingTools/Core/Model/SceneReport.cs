@@ -80,6 +80,7 @@ namespace SideQuest.LightingTools.Core
             WriteEnvelope(w, scan, tool, toolVersion, reportId, detail, truncated);
             scan.Urp.Write(w);
             scan.Scale.Write(w);
+            WriteGrid(w, scan);
             WriteRenderers(w, scan);
             WriteMaterials(w, scan);
             WriteLights(w, scan);
@@ -121,6 +122,28 @@ namespace SideQuest.LightingTools.Core
                 w.Prop("truncated", true);
                 w.Prop("truncationReason", "report exceeded the configured byte budget; detail was reduced");
             }
+        }
+
+        /// <summary>
+        /// The voxelisation the zones came from.
+        ///
+        /// Cheap to write and the first thing worth checking when a zone list looks wrong:
+        /// a coarse cell size cannot resolve a doorway, and an interior count near zero
+        /// means the scene has no enclosed space for rooms to be found in.
+        /// </summary>
+        static void WriteGrid(SqJsonWriter w, SceneScan scan)
+        {
+            if (scan.Grid == null) return;
+
+            w.BeginObject("grid");
+            w.Prop("cellSize", scan.Grid.CellSize);
+            w.Prop("cells", scan.Grid.CellCount);
+            w.Prop("solid", scan.Grid.SolidCount);
+            w.Prop("exterior", scan.Grid.ExteriorCount);
+            w.Prop("interior", scan.Grid.InteriorCount);
+            w.Prop("source", scan.Grid.UsedRendererFallback ? "renderer-bounds" : "colliders");
+            w.Prop("erosionPasses", ZoneSegmenter.ErosionPassesFor(scan.Grid.CellSize));
+            w.EndObject();
         }
 
         static void WriteRenderers(SqJsonWriter w, SceneScan scan)

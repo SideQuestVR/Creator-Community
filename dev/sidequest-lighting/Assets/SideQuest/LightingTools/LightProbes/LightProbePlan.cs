@@ -69,7 +69,7 @@ namespace SideQuest.LightingTools.LightProbes
             {
                 validation.Note(SqSeverity.Warn, "minSpacing",
                     "minSpacing was larger than spacing, so it was lowered to match",
-                    plan.MinSpacing.ToString("0.##"), plan.Spacing.ToString("0.##"));
+                    SqFormat.Num(plan.MinSpacing), SqFormat.Num(plan.Spacing));
                 plan.MinSpacing = plan.Spacing;
             }
 

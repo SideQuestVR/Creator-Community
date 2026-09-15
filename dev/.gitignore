@@ -1,0 +1,4 @@
+# Unity writes these into the test project, not here, but a stray copy of the
+# runtime data folder must never be committed: reports and plans are per-machine
+# scratch, not source.
+sidequest-lighting/**/SideQuestLighting/

@@ -71,6 +71,17 @@ namespace SideQuest.LightingTools.LightProbes
             var accepted = new SpatialHash(Mathf.Max(settings.MinSpacing, 0.1f));
             int acceptedCount = 0;
 
+            // Layers are validated against the same space the candidates came from, so a
+            // column standing on a prop stops at the ceiling instead of passing through it.
+            bool interiorOnly = grid.InteriorCount > 0;
+            System.Func<Vector3, bool> isValid = position =>
+            {
+                Vector3Int cell = grid.WorldToCell(position);
+                return interiorOnly
+                    ? grid.IsInterior(cell.x, cell.y, cell.z)
+                    : grid.IsFree(cell.x, cell.y, cell.z);
+            };
+
             try
             {
                 for (int i = 0; i < candidates.Count; i++)
@@ -88,7 +99,7 @@ namespace SideQuest.LightingTools.LightProbes
                     accepted.Insert(c.Floor);
                     acceptedCount++;
 
-                    ProbeSampling.EmitColumn(c.Floor, settings.LayerHeights, scan.Scale.CeilingHeightEstimate, world);
+                    ProbeSampling.EmitColumn(c.Floor, settings.LayerHeights, scan.Scale.CeilingHeightEstimate, world, isValid);
                 }
             }
             finally
@@ -121,6 +132,15 @@ namespace SideQuest.LightingTools.LightProbes
             var candidates = new List<Candidate>();
             float gradientRadius = Mathf.Max(settings.Spacing * 0.5f, 0.5f);
 
+            // "A free cell above a solid one" describes the roof and the ground outside
+            // just as well as it describes a floor, so an enclosed scene would spend a
+            // quarter of its probe budget lighting the outside of the building. Where the
+            // scene has enclosed space, probes belong in it.
+            //
+            // A scene that is entirely open has no interior to restrict to, and there the
+            // exterior surfaces are the floors - so fall back rather than place nothing.
+            bool interiorOnly = grid.InteriorCount > 0;
+
             for (int x = 0; x < grid.SizeX; x++)
                 for (int z = 0; z < grid.SizeZ; z++)
                 {
@@ -128,7 +148,7 @@ namespace SideQuest.LightingTools.LightProbes
 
                     for (int y = 0; y < grid.SizeY; y++)
                     {
-                        if (!grid.IsFree(x, y, z)) continue;
+                        if (interiorOnly ? !grid.IsInterior(x, y, z) : !grid.IsFree(x, y, z)) continue;
                         if (!grid.IsSolid(x, y - 1, z)) continue; // not standing on anything
 
                         Vector3 floor = grid.CellCenter(x, y, z);
