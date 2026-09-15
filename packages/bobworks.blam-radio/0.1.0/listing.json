@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../schemas/listing.schema.json",
+  "schemaVersion": 1,
+  "id": "bobworks.blam-radio",
+  "version": "0.1.0",
+  "name": "Blam Radio",
+  "category": "prefab",
+  "description": "A portable radio rebuilt from original boxes, speaker cylinders and a horizontal carry handle, matched to Blam's grab collider. Plays BOBWORKS-XR's Climb on up (v2), with a five-minute idle return to its starting position. The track is included under MIT with author credit.",
+  "author": {
+    "name": "BOBWORKS-XR",
+    "url": "https://github.com/BOBWORKS-XR"
+  },
+  "license": "MIT",
+  "licensePath": "packages/bobworks.blam-radio/0.1.0/LICENSE.txt",
+  "instructionsPath": "packages/bobworks.blam-radio/0.1.0/README.md",
+  "sourceUrl": "https://github.com/SideQuestVR/Creator-Community/tree/fc1d4ce06ceacbe135fdc567569a03859024bfd1/dev/portable-props",
+  "compatibility": {
+    "unity": [
+      "6000.3.21f1"
+    ],
+    "creatorSdk": [
+      "4.0.14"
+    ],
+    "banterSdk": []
+  },
+  "dependencies": [
+    "Creator SDK 4.0.14, configured with the Grabbable layer",
+    "Universal Render Pipeline 17.3.0",
+    "Unity Visual Scripting 1.9.1"
+  ],
+  "includesCode": true,
+  "scope": "both",
+  "aiAssisted": true,
+  "testNotes": "Windows Editor verification, 2026-09-15: all three exported archives imported into a fresh Unity 6000.3.21f1 / Creator SDK 4.0.14 / URP 17.3.0 / Visual Scripting 1.9.1 project. Graph execution, missing-reference checks and the SDK allow-list passed. Six inserted instances retained unique IDs and the project's layer after saving and reopening. Actual physics contact ignited the stick and its Update graph extinguished it after 79.95754 game seconds. The radio's collider position, axis, dimensions and grab radius match the original Blam reference. Archive checks verify shared assets and the unchanged author-owned music bytes. Runtime behaviour uses native SDK components and Visual Scripting; the only C# shipped is the explicit Editor insertion menu. Preview is rendered from the included prefab. Not verified: legacy Banter/Unity 2022, native controller feel, hosted Quest, multiplayer or other operating systems. Transform sync is configured; fire-state sync and a shared music clock are not provided. See dev/portable-props/REVIEW.md for evidence and test limitations.",
+  "usage": "Import, then choose Tools > Creator Community > Add > Blam Radio. Position it and save the scene yourself. Grab the horizontal top handle. Edit the Audio child's clip, volume and range; adjust ReturnAfterSeconds on the root. It also returns on contact with a Finish-tagged trigger.",
+  "contents": [
+    "Assets/CreatorCommunity/BlamRadio/Materials/Speaker.mat",
+    "Assets/CreatorCommunity/BlamRadio/README.md",
+    "Assets/CreatorCommunity/BlamRadio/Materials/Trim.mat",
+    "Assets/CreatorCommunity/BlamRadio/BlamRadio.prefab",
+    "Assets/CreatorCommunity/BlamRadio/Materials/Body.mat",
+    "Assets/CreatorCommunity/PortableProps/Editor/CreatorPropsMenu.cs",
+    "Assets/CreatorCommunity/BlamRadio/Meshes/HorizontalHandle.asset",
+    "Assets/CreatorCommunity/BlamRadio/VisualScripting/RadioReturn.asset",
+    "Assets/CreatorCommunity/BlamRadio/LICENSE.txt",
+    "Assets/CreatorCommunity/BlamRadio/Audio/BlamTrack.mp3",
+    "Assets/CreatorCommunity/BlamRadio/Materials/Dial.mat"
+  ],
+  "previewImage": "packages/bobworks.blam-radio/0.1.0/preview.png",
+  "reviewStatus": "listed",
+  "download": {
+    "path": "packages/bobworks.blam-radio/0.1.0/BlamRadio-0.1.0.unitypackage",
+    "byteLength": 4070605,
+    "sha256": "1c732dc47626b85f05f1ccbd336214671d62387ab83fc5494c0d30302772b6ce"
+  }
+}
