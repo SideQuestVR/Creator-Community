@@ -242,6 +242,19 @@ namespace SideQuest.LightingTools.ReflectionProbes
                 return;
             }
 
+            // A probe captures the scene as currently lit. Baking it before the lightmaps
+            // exist gives a cubemap of the unlit scene, and because baking again with
+            // identical settings then fixes it, the cause looks like anything except an
+            // ordering problem. Cheap to check, and the check is the only warning anyone
+            // gets.
+            LightmapData[] lightmaps = LightmapSettings.lightmaps;
+            if (lightmaps == null || lightmaps.Length == 0)
+            {
+                SqLog.Warn(ReflectionProbePlan.ToolId, "bake",
+                    "code", ReflectionProbePlacer.CodeBakeOrder,
+                    "msg", "no lightmaps in this scene yet - probes baked now will capture the scene unlit; bake lightmaps first, then bake probes again");
+            }
+
             // Baking each probe individually rather than through a full Lightmapping.Bake:
             // the full bake also recomputes lightmaps, which on a large scene is tens of
             // minutes to produce cubemaps that take seconds.

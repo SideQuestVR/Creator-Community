@@ -1,6 +1,8 @@
 // SideQuest Lighting Tools - MIT
 using System.Collections.Generic;
+using System.IO;
 using SideQuest.LightingTools.Core;
+using UnityEditor;
 using UnityEngine;
 
 namespace SideQuest.LightingTools.ReflectionProbes
@@ -21,6 +23,8 @@ namespace SideQuest.LightingTools.ReflectionProbes
         public const string CodeAuthorProbes = "RP040_AUTHORED_PROBES";
         public const string CodeInsideGeometry = "RP050_INSIDE_GEOMETRY";
         public const string CodeNoGloss = "RP060_NO_GLOSSY_SURFACES";
+        public const string CodeStaleCapture = "RP070_PROBES_OLDER_THAN_LIGHTMAPS";
+        public const string CodeBakeOrder = "RP071_BAKE_AFTER_LIGHTMAPS";
 
         /// <summary>A zone contributing less weight than this does not justify a probe.</summary>
         public const float ZoneWeightThreshold = 4f;
@@ -76,6 +80,7 @@ namespace SideQuest.LightingTools.ReflectionProbes
             AssignImportance(specs);
             EnforceMemoryBudget(specs, options, problems);
             CheckExisting(scan, specs, problems);
+            CheckCaptureFreshness(scan, problems);
 
             return specs;
         }
@@ -148,6 +153,7 @@ namespace SideQuest.LightingTools.ReflectionProbes
                     ZoneId = zone.Id,
                     ServedWeight = cluster.TotalWeight,
                     BlendDistance = ChooseBlendDistance(box),
+                    NearClip = ChooseNearClip(box),
                     Resolution = ChooseResolution(maxSmoothness, box),
                     Hdr = true,
                     BoxProjection = true,
@@ -212,6 +218,21 @@ namespace SideQuest.LightingTools.ReflectionProbes
         /// warehouse and swallows a cupboard whole. A tenth of the shortest axis keeps the
         /// transition proportional to the space.
         /// </summary>
+        /// <summary>
+        /// Near clip scaled to the space, well under Unity's 0.3 default.
+        ///
+        /// Anything closer to the capture point than this is missing from the cubemap, so
+        /// in a small room or a tight alcove the default quietly drops the nearest
+        /// surfaces - which reads as seeing through a wall into whatever is behind it.
+        /// There is no cost to a small value for a cubemap capture, and the failure it
+        /// prevents is invisible until someone stands in the wrong place.
+        /// </summary>
+        static float ChooseNearClip(Bounds box)
+        {
+            float minExtent = Mathf.Min(box.size.x, Mathf.Min(box.size.y, box.size.z));
+            return Mathf.Clamp(minExtent * 0.02f, 0.01f, 0.3f);
+        }
+
         static float ChooseBlendDistance(Bounds box)
         {
             float minExtent = Mathf.Min(box.size.x, Mathf.Min(box.size.y, box.size.z));
@@ -385,6 +406,88 @@ namespace SideQuest.LightingTools.ReflectionProbes
         /// know why a hand-placed probe is where it is, and overwriting one would destroy
         /// work that the plan file gives no way to recover.
         /// </summary>
+        /// <summary>
+        /// Warns when a probe's cubemap was captured before the lightmaps that light it.
+        ///
+        /// A reflection probe captures the scene as currently lit, so its cubemap is only
+        /// as correct as the lighting at the moment it was baked. Bake probes and lightmaps
+        /// in one pass and the capture can see the scene before the lightmaps land, leaving
+        /// reflections that are dark, flat, or missing nearby surfaces entirely - and
+        /// baking a second time with identical settings fixes it, which makes the cause
+        /// look like anything except an ordering problem.
+        ///
+        /// Comparing file times is crude, but it is the one signal that distinguishes
+        /// "these were captured under the current lighting" from "these were not".
+        /// </summary>
+        static void CheckCaptureFreshness(SceneScan scan, SqProblemList problems)
+        {
+            if (problems == null) return;
+
+            problems.Add(CodeBakeOrder, SqSeverity.Info,
+                "Reflection probes capture the scene as it is currently lit, so they are only correct if they were baked after the lightmaps.")
+                .WithAction("Bake lightmaps first, then Bake Probes. Re-bake probes after any lighting change.");
+
+            System.DateTime newestLightmap = NewestAssetTime(LightmapPaths());
+            if (newestLightmap == System.DateTime.MinValue) return;
+
+            System.DateTime oldestProbe = System.DateTime.MaxValue;
+            int stale = 0;
+
+            for (int i = 0; i < scan.Existing.ReflectionProbes.Count; i++)
+            {
+                ReflectionProbe probe = scan.Existing.ReflectionProbes[i];
+                if (probe == null || probe.bakedTexture == null) continue;
+
+                string path = AssetDatabase.GetAssetPath(probe.bakedTexture);
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) continue;
+
+                System.DateTime written = File.GetLastWriteTimeUtc(path);
+                if (written < oldestProbe) oldestProbe = written;
+                if (written < newestLightmap) stale++;
+            }
+
+            if (stale == 0) return;
+
+            problems.Add(CodeStaleCapture, SqSeverity.Warn, string.Format(
+                "{0} reflection probe cubemap(s) were baked before the current lightmaps, so they reflect the scene as it was lit earlier.",
+                stale))
+                .WithCount(stale)
+                .WithAction("Run Bake Probes again now that the lightmaps exist.");
+        }
+
+        static List<string> LightmapPaths()
+        {
+            var paths = new List<string>();
+            LightmapData[] lightmaps = LightmapSettings.lightmaps;
+            if (lightmaps == null) return paths;
+
+            for (int i = 0; i < lightmaps.Length; i++)
+            {
+                Texture2D color = lightmaps[i].lightmapColor;
+                if (color == null) continue;
+
+                string path = AssetDatabase.GetAssetPath(color);
+                if (!string.IsNullOrEmpty(path)) paths.Add(path);
+            }
+
+            return paths;
+        }
+
+        static System.DateTime NewestAssetTime(List<string> paths)
+        {
+            System.DateTime newest = System.DateTime.MinValue;
+
+            for (int i = 0; i < paths.Count; i++)
+            {
+                if (!File.Exists(paths[i])) continue;
+
+                System.DateTime written = File.GetLastWriteTimeUtc(paths[i]);
+                if (written > newest) newest = written;
+            }
+
+            return newest;
+        }
+
         static void CheckExisting(SceneScan scan, List<ReflectionProbeSpec> specs, SqProblemList problems)
         {
             if (problems == null) return;
