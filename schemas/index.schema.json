@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Creator Community Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "entries": { "type": "array", "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "maxLength": 500, "pattern": "^packages/[a-z0-9.-]+/[0-9A-Za-z.-]+/listing\\.json$" } }
+  }
+}

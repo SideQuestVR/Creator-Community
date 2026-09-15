@@ -34,7 +34,9 @@ body:
         - Visual Scripting graph
         - Guide or recipe
         - Plugin or SDK extension
-        - Editor tool or MCP-assisted utility
+        - Editor tool
+        - MCP tool or server
+        - AI skill
         - Not sure yet
     validations:
       required: true
@@ -67,6 +69,7 @@ body:
         - Creator SDK / Altspace
         - Banter SDK
         - Unity without a specific SDK
+        - AI client or MCP (no Unity SDK required)
         - Not sure yet
     validations:
       required: true
@@ -79,6 +82,7 @@ body:
       placeholder: |
         Unity version:
         Creator SDK or Banter version:
+        AI client and MCP server versions (if relevant):
         Tried in the Editor, headset or multiplayer:
 
   - type: textarea
@@ -110,7 +114,7 @@ body:
     id: instructions
     attributes:
       label: How do people use it? (optional)
-      description: Include any required packages, setup or removal steps, and known issues. You can also link to existing instructions.
+      description: Include dependencies, setup and removal steps, and known issues. For MCP tools or AI skills, name supported clients, required permissions and any commands or services used. You can also link to existing instructions.
       placeholder: "For example: Import the package, then place the prefab at your intended starting position."
 
   - type: dropdown
