@@ -11,7 +11,7 @@
     "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$", "maxLength": 100 },
     "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$", "maxLength": 80 },
     "name": { "type": "string", "minLength": 1, "maxLength": 120 },
-    "category": { "enum": ["prefab", "graph", "recipe", "plugin", "community-tool"] },
+    "category": { "enum": ["prefab", "graph", "recipe", "plugin", "community-tool", "mcp-tool", "ai-skill"] },
     "description": { "type": "string", "minLength": 1, "maxLength": 2000 },
     "author": {
       "type": "object",
@@ -19,7 +19,8 @@
       "required": ["name"],
       "properties": {
         "name": { "type": "string", "minLength": 1, "maxLength": 120 },
-        "url": { "$ref": "#/$defs/httpsUrl" }
+        "url": { "$ref": "#/$defs/httpsUrl" },
+        "discord": { "type": "string", "minLength": 1, "maxLength": 120 }
       }
     },
     "license": { "type": "string", "minLength": 1, "maxLength": 120 },
@@ -43,6 +44,9 @@
     "scope": { "enum": ["editor-only", "runtime", "both", "instructions-only"] },
     "aiAssisted": { "type": "boolean" },
     "testNotes": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "usage": { "type": "string", "maxLength": 4000 },
+    "contents": { "type": "array", "maxItems": 200, "items": { "type": "string", "minLength": 1, "maxLength": 500 } },
+    "reviewStatus": { "enum": ["pending", "listed"], "default": "pending", "description": "Listing review state, not a guarantee of safety. Pending entries cannot be downloaded through the app." },
     "download": {
       "type": "object",
       "additionalProperties": false,

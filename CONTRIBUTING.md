@@ -1,7 +1,8 @@
 # Share With SideQuest Creator Community
 
 Contributions can be small. A useful prefab, graph, illustrated recipe or Editor
-helper is enough. Keep the submission focused on one reusable result.
+helper is enough. MCP tools and AI skills are welcome too. Keep the submission
+focused on one reusable result.
 
 ## Propose A Contribution
 
@@ -73,6 +74,23 @@ Do not select MIT or another licence on behalf of someone else's work.
 
 ## Storage And Releases
 
+### MCP Tools And AI Skills
+
+Use `category: "mcp-tool"` for MCP tools, servers and integrations, or
+`category: "ai-skill"` for reusable AI instructions and workflows. A Unity Editor
+utility belongs under `community-tool` even if an AI helped create it.
+
+Name supported AI clients and tested versions in `testNotes`, list dependencies,
+and document permissions, network access, setup and removal in the instructions.
+Leave Unity/SDK compatibility arrays empty when they do not apply. Set
+`includesCode` for any bundled executable code, not only C#. An instructions-only
+listing uses `scope: "instructions-only"` and can omit `download`. For a download,
+use a versioned ZIP with size and SHA-256; it is saved for review, never executed
+or installed into an AI client automatically. Do not upload credentials or
+private client settings.
+
+### Package Storage
+
 Small package files can be included in the PR. Larger binary packages should be
 attached to a versioned GitHub Release by an authorized maintainer, or hosted in
 the author's own release. For the shared repository, use a tag such as
@@ -91,8 +109,8 @@ Once reviewed, a maintainer adds the listing path to `index.json`, for example:
 }
 ```
 
-The initial index is deliberately empty. Do not add the example listing.
-Hub integration is future work; these files do not install anything by themselves.
+Do not add the structural example listing to the live index. Creator Hub reads
+the reviewed index; these files do not install anything by themselves.
 
 ## Maintainer Review
 

@@ -20,18 +20,28 @@ No Git, terminal or pull request experience needed. Sign in to GitHub to submit;
 a maintainer will help with the listing and PR. Not sure about versions or a
 licence? Say so in the form. Submissions and uploaded files are public.
 
-**Status:** the directory and contribution process are being established.
-There are no published packages yet. Creator Hub browsing and installation are
-not connected to this repository yet.
+**Development status:** this branch prepares the catalogue for the shared
+Creator Plugins page in Creator Hub, Creator Project Setup and Creator Works
+MCP. It is not a separate app. Start Location by Mr. E / egon.gb is the first
+maintainer-approved listing. See its licence and testing notes before importing.
+App features depend on the version installed; catalogue publication does not
+install or update an app.
 
 ## Browse
 
-The planned categories are:
+The categories are:
 
 - **Prefabs and graphs:** reusable scene objects and Visual Scripting examples.
 - **Recipes:** instructions, screenshots and small working examples.
 - **Plugins:** SDK extensions and larger integrations.
-- **Community tools:** Editor scripts, utilities and optional MCP-assisted tools.
+- **Editor tools:** Unity Editor scripts and utilities, including AI-assisted creations.
+- **MCP tools:** reusable MCP tools, servers and integrations for AI clients.
+- **AI skills:** reusable instructions and workflows for AI assistants.
+
+MCP tools and AI skills have their own filters. Listings can link to instructions
+or offer reviewed ZIP downloads; browsing never installs a server, enables a
+skill or changes AI-client settings. Only `.unitypackage` files can be sent to
+Unity for import review.
 
 Listings identify their author, licence, dependencies and tested Unity/SDK
 versions. Banter and Creator SDK compatibility are recorded separately.
@@ -60,7 +70,8 @@ repository. Larger or frequently updated downloads should use a versioned
 GitHub Release asset. An author's own repository or an approved CDN URL is also
 supported; a separate CDN is not required.
 
-The [index](index.json) will point to approved, version-specific listing files.
+The [index](index.json) points to version-specific listing files. Pending entries
+can be previewed, but only `reviewStatus: "listed"` enables an app download.
 Each download records its size and SHA-256 checksum. New versions get new
 paths or release tags; do not silently replace an existing published package.
 
@@ -69,12 +80,28 @@ It is a community-directory format, not a Unity Package Manager registry or the
 signed first-party Creator Hub app catalogue. Merely browsing a listing never
 authorizes importing or running it.
 
+The apps read the fixed `main/index.json` feed from this repository. To add a
+listing, create `packages/<author.package>/<version>/listing.json`, add its path
+to the index, and submit the change for review. Use `previewImage` for an optional
+repository image or SideQuest CDN URL, `author.discord` for credit, and `usage`
+and `contents` for instructions and bundled files. Exact tested versions belong
+in `compatibility`; leave arrays empty when unverified. Do not mark a download
+listed before its licence and contents have been reviewed.
+
+The development apps download packages up to 32 MiB, check exact size and SHA-256,
+and offer saving or an explicit project selection. Their optional Editor-only
+menu queues packages outside `Assets` for the user's review in Unity's package
+import dialog. Browsing or queueing never silently imports code. These new
+actions are local development work, not yet shipped. There are no accounts or
+separate community service.
+
 ## Review And Testing
 
 Maintainers review provenance, licence, contents, dependencies and compatibility
 before adding a contribution to the index. A submission is not automatically
-published, built or executed. Installation and project modification require a
-separate, future reviewed workflow.
+published, built or executed. Project modification requires separate user
+approval and Unity import review; an import receipt is not proof of package
+compatibility or safe behavior.
 
 Try community packages in a backed-up test project first. Report the package
 version, Unity version, SDK version and what actually happened. Compilation
