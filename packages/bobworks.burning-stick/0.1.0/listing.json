@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../schemas/listing.schema.json",
+  "schemaVersion": 1,
+  "id": "bobworks.burning-stick",
+  "version": "0.1.0",
+  "name": "Burning Stick",
+  "category": "prefab",
+  "description": "An original low-poly, grabbable stick with independently burning ends. Light either end with Portable Lighter or another burning stick; each end burns for 80 seconds and can be relit. Includes its flame assets and editable Visual Scripting graph.",
+  "author": {
+    "name": "BOBWORKS-XR",
+    "url": "https://github.com/BOBWORKS-XR"
+  },
+  "license": "MIT",
+  "licensePath": "packages/bobworks.burning-stick/0.1.0/LICENSE.txt",
+  "instructionsPath": "packages/bobworks.burning-stick/0.1.0/README.md",
+  "sourceUrl": "https://github.com/SideQuestVR/Creator-Community/tree/fc1d4ce06ceacbe135fdc567569a03859024bfd1/dev/portable-props",
+  "compatibility": {
+    "unity": [
+      "6000.3.21f1"
+    ],
+    "creatorSdk": [
+      "4.0.14"
+    ],
+    "banterSdk": []
+  },
+  "dependencies": [
+    "Creator SDK 4.0.14, configured with the Grabbable layer",
+    "Universal Render Pipeline 17.3.0",
+    "Unity Visual Scripting 1.9.1"
+  ],
+  "includesCode": true,
+  "scope": "both",
+  "aiAssisted": true,
+  "testNotes": "Windows Editor verification, 2026-09-15: all three exported archives imported into a fresh Unity 6000.3.21f1 / Creator SDK 4.0.14 / URP 17.3.0 / Visual Scripting 1.9.1 project. Graph execution, missing-reference checks and the SDK allow-list passed. Six inserted instances retained unique IDs and the project's layer after saving and reopening. Actual physics contact ignited the stick and its Update graph extinguished it after 79.95754 game seconds. The radio's collider position, axis, dimensions and grab radius match the original Blam reference. Archive checks verify shared assets and the unchanged author-owned music bytes. Runtime behaviour uses native SDK components and Visual Scripting; the only C# shipped is the explicit Editor insertion menu. Preview is rendered from the included prefab. Not verified: legacy Banter/Unity 2022, native controller feel, hosted Quest, multiplayer or other operating systems. Transform sync is configured; fire-state sync and a shared music clock are not provided. See dev/portable-props/REVIEW.md for evidence and test limitations.",
+  "usage": "Import, then choose Tools > Creator Community > Add > Burning Stick. Position it and save the scene yourself. Touch an end to a lit Portable Lighter or another burning stick. Adjust BurnSeconds on each end's Variables component.",
+  "contents": [
+    "Assets/CreatorCommunity/BurningStick/Materials/Wood.mat",
+    "Assets/CreatorCommunity/BurningStick/BurningStick.prefab",
+    "Assets/CreatorCommunity/BurningStick/Meshes/Stick.asset",
+    "Assets/CreatorCommunity/BurningStick/LICENSE.txt",
+    "Assets/CreatorCommunity/BurningStick/README.md",
+    "Assets/CreatorCommunity/BurningStick/VisualScripting/BurningEnd.asset",
+    "Assets/CreatorCommunity/LighterFlame/VisualScripting/LighterFlameMotion.asset",
+    "Assets/CreatorCommunity/LighterFlame/LighterFlame.asset",
+    "Assets/CreatorCommunity/PortableProps/Editor/CreatorPropsMenu.cs",
+    "Assets/CreatorCommunity/LighterFlame/LighterFlame.mat",
+    "Assets/CreatorCommunity/LighterFlame/LighterFlame.shader"
+  ],
+  "previewImage": "packages/bobworks.burning-stick/0.1.0/preview.png",
+  "reviewStatus": "listed",
+  "download": {
+    "path": "packages/bobworks.burning-stick/0.1.0/BurningStick-0.1.0.unitypackage",
+    "byteLength": 51675,
+    "sha256": "18a76f8418ba3ecd9cc75110eb04f9540d36e386fbf5604d900e83c7bba8e5c7"
+  }
+}

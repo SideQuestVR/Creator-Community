@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../schemas/listing.schema.json",
+  "schemaVersion": 1,
+  "id": "bobworks.portable-lighter",
+  "version": "0.1.0",
+  "name": "Portable Lighter",
+  "category": "prefab",
+  "description": "An original grabbable lighter with a blue-based, flickering flame that trails slightly with movement. Toggle it with the held hand's trigger, then touch a Burning Stick end to ignite it. No third-party model or flame texture.",
+  "author": {
+    "name": "BOBWORKS-XR",
+    "url": "https://github.com/BOBWORKS-XR"
+  },
+  "license": "MIT",
+  "licensePath": "packages/bobworks.portable-lighter/0.1.0/LICENSE.txt",
+  "instructionsPath": "packages/bobworks.portable-lighter/0.1.0/README.md",
+  "sourceUrl": "https://github.com/SideQuestVR/Creator-Community/tree/fc1d4ce06ceacbe135fdc567569a03859024bfd1/dev/portable-props",
+  "compatibility": {
+    "unity": [
+      "6000.3.21f1"
+    ],
+    "creatorSdk": [
+      "4.0.14"
+    ],
+    "banterSdk": []
+  },
+  "dependencies": [
+    "Creator SDK 4.0.14, configured with the Grabbable layer",
+    "Universal Render Pipeline 17.3.0",
+    "Unity Visual Scripting 1.9.1"
+  ],
+  "includesCode": true,
+  "scope": "both",
+  "aiAssisted": true,
+  "testNotes": "Windows Editor verification, 2026-09-15: all three exported archives imported into a fresh Unity 6000.3.21f1 / Creator SDK 4.0.14 / URP 17.3.0 / Visual Scripting 1.9.1 project. Graph execution, missing-reference checks and the SDK allow-list passed. Six inserted instances retained unique IDs and the project's layer after saving and reopening. Actual physics contact ignited the stick and its Update graph extinguished it after 79.95754 game seconds. The radio's collider position, axis, dimensions and grab radius match the original Blam reference. Archive checks verify shared assets and the unchanged author-owned music bytes. Runtime behaviour uses native SDK components and Visual Scripting; the only C# shipped is the explicit Editor insertion menu. Preview is rendered from the included prefab. Not verified: legacy Banter/Unity 2022, native controller feel, hosted Quest, multiplayer or other operating systems. Transform sync is configured; fire-state sync and a shared music clock are not provided. See dev/portable-props/REVIEW.md for evidence and test limitations.",
+  "usage": "Import into a configured Creator SDK project, then choose Tools > Creator Community > Add > Portable Lighter. Position it and save the scene yourself. Import Burning Stick separately to try ignition. Dropping the lighter extinguishes it.",
+  "contents": [
+    "Assets/CreatorCommunity/PortableLighter/Audio/LighterClick.wav",
+    "Assets/CreatorCommunity/PortableLighter/Materials/Casing.mat",
+    "Assets/CreatorCommunity/LighterFlame/VisualScripting/LighterFlameMotion.asset",
+    "Assets/CreatorCommunity/LighterFlame/LighterFlame.asset",
+    "Assets/CreatorCommunity/PortableLighter/VisualScripting/Lighter.asset",
+    "Assets/CreatorCommunity/PortableLighter/Materials/DarkMetal.mat",
+    "Assets/CreatorCommunity/PortableProps/Editor/CreatorPropsMenu.cs",
+    "Assets/CreatorCommunity/PortableLighter/LICENSE.txt",
+    "Assets/CreatorCommunity/LighterFlame/LighterFlame.mat",
+    "Assets/CreatorCommunity/LighterFlame/LighterFlame.shader",
+    "Assets/CreatorCommunity/PortableLighter/Materials/BrushedMetal.mat",
+    "Assets/CreatorCommunity/PortableLighter/README.md",
+    "Assets/CreatorCommunity/PortableLighter/PortableLighter.prefab"
+  ],
+  "previewImage": "packages/bobworks.portable-lighter/0.1.0/preview.png",
+  "reviewStatus": "listed",
+  "download": {
+    "path": "packages/bobworks.portable-lighter/0.1.0/PortableLighter-0.1.0.unitypackage",
+    "byteLength": 84520,
+    "sha256": "f31d737f59ed2bc56bc8b4312b67c645b5153ec08d05aaee2ac7ca322257befc"
+  }
+}
