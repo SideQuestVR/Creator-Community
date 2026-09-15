@@ -24,6 +24,7 @@ namespace SideQuest.LightingTools.LightProbes
     {
         public const string CodeMovingContributor = "LP050_MOVING_CONTRIBUTOR";
         public const string CodeNoUv2 = "LP051_NO_UV2";
+        public const string CodeAllProbeLit = "LP052_ALL_PROBE_LIT";
 
         public sealed class Decision
         {
@@ -45,11 +46,10 @@ namespace SideQuest.LightingTools.LightProbes
             var decisions = new List<Decision>();
             if (!plan.AssignContributeGI) return decisions;
 
-            // Anything under about four times the threshold is "small" - big enough to
-            // bounce light worth baking, too small to deserve its own texels.
-            float smallThreshold = plan.ContributeGIMinExtent * 4f;
+            float smallThreshold = plan.ProbeLitMaxExtent;
 
             int movingContributors = 0;
+            int wouldBeLightmapped = 0;
             var missingUv2 = new List<int>();
 
             for (int i = 0; i < scan.Renderers.Count; i++)
@@ -91,6 +91,8 @@ namespace SideQuest.LightingTools.LightProbes
                 }
 
                 bool wantsProbeLighting = plan.SmallObjectsReceiveFromProbes && extent < smallThreshold;
+                if (!wantsProbeLighting) wouldBeLightmapped++;
+
                 bool needsChange = !r.ContributeGI ||
                     (wantsProbeLighting && !ReceivesFromProbes(r.Renderer));
 
@@ -108,6 +110,23 @@ namespace SideQuest.LightingTools.LightProbes
 
                 if (!wantsProbeLighting && !r.HasUv2 && missingUv2.Count < SqProblem.MaxSamples)
                     missingUv2.Add(r.Index);
+            }
+
+            // A scene where every contributor reads its lighting from probes has nothing
+            // left to lightmap, so a bake produces no lightmaps at all. That is almost
+            // never what anyone means, and without this guard it shows up two tools later
+            // as an empty bake rather than here as a bad threshold.
+            if (wouldBeLightmapped == 0 && decisions.Count > 0)
+            {
+                for (int i = 0; i < decisions.Count; i++) decisions[i].SetReceiveFromProbes = false;
+
+                if (problems != null)
+                {
+                    problems.Add(CodeAllProbeLit, SqSeverity.Warn, string.Format(
+                        "Every contributing renderer is under the {0}m probe-lit threshold, which would leave the lightmap bake with nothing to bake. Receive GI was left alone.",
+                        SqFormat.Num(smallThreshold)))
+                        .WithAction("Lower Probe Lit Max Extent so the large structural geometry stays lightmapped.");
+                }
             }
 
             Report(problems, movingContributors, missingUv2);

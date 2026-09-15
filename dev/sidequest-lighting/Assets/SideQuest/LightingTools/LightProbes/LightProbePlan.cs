@@ -41,8 +41,23 @@ namespace SideQuest.LightingTools.LightProbes
         public string VolumeObjectId;
 
         public bool AssignContributeGI = true;
+
+        /// <summary>Below this an object is too small to bounce meaningful light and stops contributing GI.</summary>
         public float ContributeGIMinExtent = 0.5f;
+
         public bool SmallObjectsReceiveFromProbes = true;
+
+        /// <summary>
+        /// Objects smaller than this read their own shading from probes instead of owning
+        /// lightmap texels. Anything larger stays lightmapped.
+        ///
+        /// This was previously derived as four times the minimum extent, which is fine
+        /// until the renderers ARE the architecture: a building of 8m wall slabs reports a
+        /// 25th-percentile extent of 3.5m, making "small" mean 14m, and every wall and
+        /// floor in the scene switched to probe lighting - leaving the lightmap bake with
+        /// nothing to bake at all.
+        /// </summary>
+        public float ProbeLitMaxExtent = 1.5f;
 
         // ---- reading ----
 
@@ -86,6 +101,7 @@ namespace SideQuest.LightingTools.LightProbes
             {
                 plan.AssignContributeGI = gi["enabled"].AsBool(true);
                 plan.ContributeGIMinExtent = validation.Clamp("contributeGI.minExtent", gi["minExtent"].AsFloat(0.5f), 0f, 100f);
+                plan.ProbeLitMaxExtent = validation.Clamp("contributeGI.probeLitMaxExtent", gi["probeLitMaxExtent"].AsFloat(1.5f), 0f, 100f);
                 plan.SmallObjectsReceiveFromProbes = gi["smallObjectsReceiveFromProbes"].AsBool(true);
             }
 
@@ -228,6 +244,7 @@ namespace SideQuest.LightingTools.LightProbes
             w.BeginObject("contributeGI");
             w.Prop("enabled", AssignContributeGI);
             w.Prop("minExtent", ContributeGIMinExtent);
+            w.Prop("probeLitMaxExtent", ProbeLitMaxExtent);
             w.Prop("smallObjectsReceiveFromProbes", SmallObjectsReceiveFromProbes);
             w.EndObject();
         }
@@ -250,7 +267,12 @@ namespace SideQuest.LightingTools.LightProbes
                 EdgeBand = settings.probeEdgeBand,
                 LayerHeights = settings.probeLayerHeights,
                 MaxProbes = settings.maxLightProbes,
-                ContributeGIMinExtent = Mathf.Max(0.3f, scan.Scale.ExtentP25)
+
+                // Both thresholds are sized against the room rather than against the
+                // distribution of renderer sizes. In a scene whose renderers are the walls
+                // and floors, that distribution describes the building, not the props in it.
+                ContributeGIMinExtent = Mathf.Clamp(scan.Scale.CeilingHeightEstimate * 0.15f, 0.3f, 1f),
+                ProbeLitMaxExtent = Mathf.Clamp(scan.Scale.CeilingHeightEstimate * 0.5f, 0.75f, 3f)
             };
 
             plan.Strategy = scan.NavMesh.Present ? ProbeStrategy.NavMesh : ProbeStrategy.Adaptive;
