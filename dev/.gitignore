@@ -1,4 +1,11 @@
-# Unity writes these into the test project, not here, but a stray copy of the
-# runtime data folder must never be committed: reports and plans are per-machine
-# scratch, not source.
+# Runtime scratch. Reports, plans and results are per-machine working files that
+# Unity writes into the test project, never source.
 sidequest-lighting/**/SideQuestLighting/
+
+# Generated fixtures. TestSceneBuilder is the source of truth for these - a .unity
+# file is an opaque diff, and committing both the generator and its output invites
+# them to disagree. Rebuild with Tools > SideQuest > Lighting > Tests > Build All.
+sidequest-lighting/Tests/Scenes/
+sidequest-lighting/Tests/Materials/
+sidequest-lighting/Tests/Scenes.meta
+sidequest-lighting/Tests/Materials.meta
