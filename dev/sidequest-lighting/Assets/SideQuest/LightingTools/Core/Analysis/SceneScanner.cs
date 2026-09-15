@@ -162,7 +162,12 @@ namespace SideQuest.LightingTools.Core
             // FindObjectsByType, not the deprecated FindObjectsOfType, and renderers
             // rather than every GameObject: the prior-art tool walked all GameObjects and
             // filtered afterwards, which is far more expensive on a large scene.
-            Renderer[] renderers = UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include);
+            //
+            // The two-argument overload is deliberate. Unity 6000.4 added a single-argument
+            // form and deprecated this one, but 6000.3 does not have it - so the newer call
+            // is a hard compile error there, while this one is merely a warning on 6000.4.
+            // Portability wins over a clean warning list.
+            Renderer[] renderers = UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             var uniqueMaterials = new HashSet<int>();
 
@@ -204,7 +209,7 @@ namespace SideQuest.LightingTools.Core
 
         static void ScanLights(SceneScan scan)
         {
-            Light[] lights = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include);
+            Light[] lights = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             for (int i = 0; i < lights.Length; i++)
             {
@@ -230,7 +235,7 @@ namespace SideQuest.LightingTools.Core
 
         static void ScanExisting(SceneScan scan)
         {
-            LightProbeGroup[] groups = UnityEngine.Object.FindObjectsByType<LightProbeGroup>(FindObjectsInactive.Include);
+            LightProbeGroup[] groups = UnityEngine.Object.FindObjectsByType<LightProbeGroup>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             for (int i = 0; i < groups.Length; i++)
             {
@@ -239,7 +244,7 @@ namespace SideQuest.LightingTools.Core
                 if (positions != null) scan.Existing.TotalProbePositions += positions.Length;
             }
 
-            ReflectionProbe[] probes = UnityEngine.Object.FindObjectsByType<ReflectionProbe>(FindObjectsInactive.Include);
+            ReflectionProbe[] probes = UnityEngine.Object.FindObjectsByType<ReflectionProbe>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             scan.Existing.ReflectionProbes.AddRange(probes);
 
             LightmapData[] lightmaps = LightmapSettings.lightmaps;

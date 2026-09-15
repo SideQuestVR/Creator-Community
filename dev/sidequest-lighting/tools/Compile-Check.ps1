@@ -10,12 +10,17 @@
 # It is a syntax and binding check only - it proves the code compiles, never that it
 # behaves. Editor testing against a real scene is still required.
 #
+# Check against every Unity version the packages claim to support, not just one. The
+# FindObjectsByType overloads differ between 6000.3 and 6000.4 in a way that is a
+# warning on one and a hard compile error on the other, which only a per-version run
+# catches.
+#
 #   .\Compile-Check.ps1
 #   .\Compile-Check.ps1 -UnityVersion 6000.4.3f1 -UrpProject "R:\UNITY\Banter\HolloweenHospital"
 
 [CmdletBinding()]
 param(
-    [string] $UnityVersion = "6000.4.3f1",
+    [string] $UnityVersion = "6000.3.21f1",
 
     # Any URP project whose Library\ScriptAssemblies holds the compiled URP assemblies.
     # URP ships as a package, so its DLLs exist per-project rather than in the Editor.
@@ -63,6 +68,7 @@ Get-ChildItem (Join-Path $editorData "Managed") -Filter "UnityEditor*.dll" |
 if ([string]::IsNullOrEmpty($UrpProject)) {
     # Any project with URP compiled will do; the assemblies are identical per URP version.
     $candidates = @(
+        "R:\UNITY\Creator-Community",
         "R:\UNITY\Banter\HolloweenHospital"
     )
     foreach ($candidate in $candidates) {
