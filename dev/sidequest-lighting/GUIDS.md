@@ -9,26 +9,31 @@ That is the whole mechanism, and it fails silently if a GUID drifts: the user ge
 `CS0101` duplicate definitions and no obvious cause. So these values are frozen here
 and `Build-Packages.ps1` refuses to build when a `.meta` no longer matches.
 
+**Folder metas are included deliberately.** A folder's `.meta` is a sibling of the
+folder, not a file inside it, so copying a tree's contents leaves its own `.meta`
+behind and Unity invents a new folder GUID on every export. An earlier version of this
+list covered only the files under `LightingTools/`, which meant the verification passed
+while `Assets/SideQuest` and `Assets/SideQuest/LightingTools/Core` genuinely differed
+between two published packages.
+
 Generated from the `.meta` files Unity wrote. Do not edit by hand. If a file is added,
 let Unity import it and regenerate this list; if a GUID here ever needs to change, the
 packages that shipped the old one have to be republished together.
 
 | Path | GUID |
 | --- | --- |
+| `Assets/SideQuest` | `5fcb8a526301c0045b9160df8e155bf1` |
+| `Assets/SideQuest/LightingTools` | `70c06528dae78d44ba53eca5f92b3290` |
 | `Assets/SideQuest/LightingTools/Bake` | `620fc92c5d5c5264da4e345231d2f3ad` |
-| `Assets/SideQuest/LightingTools/Core` | `2dddf1f806ec2a048b1880eb8ddf4afa` |
-| `Assets/SideQuest/LightingTools/LightProbes` | `09fb8e0c69ed94f4fb6aaea21101d931` |
-| `Assets/SideQuest/LightingTools/Occlusion` | `5338eaa35f602f547b8a6b461efae0b0` |
-| `Assets/SideQuest/LightingTools/ReflectionProbes` | `704c09ef582dd53468f940cdec2105c3` |
+| `Assets/SideQuest/LightingTools/Bake/BakeryDetector.cs` | `2c7a0bb88d1a5e84d8da92cd5b8e84c9` |
+| `Assets/SideQuest/LightingTools/Bake/LightBakePlan.cs` | `5738708a407dc6841ae2c40e135cb01e` |
+| `Assets/SideQuest/LightingTools/Bake/LightBakeTool.cs` | `c2ce8629e6fb30f40906fc5ed51a80b5` |
+| `Assets/SideQuest/LightingTools/Bake/LightBakeWindow.cs` | `1e9e8d3b57d70c14f968c93f5e711fec` |
+| `Assets/SideQuest/LightingTools/Bake/LightmapBudget.cs` | `c971ad5163701c84fae3b6163eaa2e9e` |
+| `Assets/SideQuest/LightingTools/Bake/LightmapUvAudit.cs` | `bef46b21ff1f58e45983f8b0b258049e` |
 | `Assets/SideQuest/LightingTools/Bake/SideQuest.LightingTools.Bake.Editor.asmdef` | `856ab870238e983469cd501f58d180b2` |
+| `Assets/SideQuest/LightingTools/Core` | `2dddf1f806ec2a048b1880eb8ddf4afa` |
 | `Assets/SideQuest/LightingTools/Core/Analysis` | `6724de61b4dba8f4f909a1645270c08e` |
-| `Assets/SideQuest/LightingTools/Core/Io` | `8278096db14b31b40ab5499a5d153e23` |
-| `Assets/SideQuest/LightingTools/Core/Json` | `f52aa93529ddc594bb76dc8c90f892d0` |
-| `Assets/SideQuest/LightingTools/Core/Model` | `db70f53343ad9244ea9c1a37b6f8ed93` |
-| `Assets/SideQuest/LightingTools/Core/SideQuest.LightingTools.Core.Editor.asmdef` | `6a3b00b888f6f134ea607c20172dfffa` |
-| `Assets/SideQuest/LightingTools/Core/SqLightingCore.cs` | `1686ca8e3f7eac843b572a029cef4f32` |
-| `Assets/SideQuest/LightingTools/Core/Ui` | `2c2421feae840044fad78569fc7b022d` |
-| `Assets/SideQuest/LightingTools/Core/Urp` | `96cde4b641e459b46b073b04107b4551` |
 | `Assets/SideQuest/LightingTools/Core/Analysis/Histogram.cs` | `290b74e1525078744870f2e5963b0e38` |
 | `Assets/SideQuest/LightingTools/Core/Analysis/IrradianceProbe.cs` | `7b3e9d2487deac04199de8ee6708cb61` |
 | `Assets/SideQuest/LightingTools/Core/Analysis/MaterialFacts.cs` | `22c7af318750ad2489f1920676a5a620` |
@@ -38,26 +43,34 @@ packages that shipped the old one have to be republished together.
 | `Assets/SideQuest/LightingTools/Core/Analysis/SceneScanner.cs` | `dfdc4f4f7d83d66448132fd0b0d11e89` |
 | `Assets/SideQuest/LightingTools/Core/Analysis/SpatialHash.cs` | `d9f39ea415b33b84287cd4b97ad3e21b` |
 | `Assets/SideQuest/LightingTools/Core/Analysis/ZoneSegmenter.cs` | `5557c7aa224d53a47b3206819acc7fbd` |
+| `Assets/SideQuest/LightingTools/Core/Io` | `8278096db14b31b40ab5499a5d153e23` |
 | `Assets/SideQuest/LightingTools/Core/Io/PlanValidator.cs` | `812e84dafe55bab45bd9d15d3c7cd367` |
 | `Assets/SideQuest/LightingTools/Core/Io/ReportPaths.cs` | `1cdacaf08b46e614fbb6e6e019a60908` |
 | `Assets/SideQuest/LightingTools/Core/Io/ReportWriter.cs` | `9cfe2f99750662a41b119eb52a71bc78` |
 | `Assets/SideQuest/LightingTools/Core/Io/SqToolContext.cs` | `564321d229f6b504a934c9a1637264ae` |
 | `Assets/SideQuest/LightingTools/Core/Io/StatusFile.cs` | `d136b01b25d3e5745a7f1911d5574445` |
+| `Assets/SideQuest/LightingTools/Core/Json` | `f52aa93529ddc594bb76dc8c90f892d0` |
 | `Assets/SideQuest/LightingTools/Core/Json/SqJsonParser.cs` | `0e80cad7832ee984191906808fc7413e` |
 | `Assets/SideQuest/LightingTools/Core/Json/SqJsonValue.cs` | `38d6e80bf05f37b4d9c8fe0c2ab74221` |
 | `Assets/SideQuest/LightingTools/Core/Json/SqJsonWriter.cs` | `582c730a2eacb8e41b06278eeb96f9b0` |
+| `Assets/SideQuest/LightingTools/Core/Model` | `db70f53343ad9244ea9c1a37b6f8ed93` |
 | `Assets/SideQuest/LightingTools/Core/Model/ApplyResult.cs` | `2a78d3c017511b84caa59ac757379835` |
 | `Assets/SideQuest/LightingTools/Core/Model/DecisionPlan.cs` | `b14794cf39e1d4a4e96426fc8707e74e` |
 | `Assets/SideQuest/LightingTools/Core/Model/SceneReport.cs` | `427eb435b002cab4298b82100423340d` |
 | `Assets/SideQuest/LightingTools/Core/Model/SqFormat.cs` | `eef61f961ca01614b952d9f9395458f1` |
 | `Assets/SideQuest/LightingTools/Core/Model/SqObjectId.cs` | `e660c1b66a234d645aabc93ef5a77ea8` |
 | `Assets/SideQuest/LightingTools/Core/Model/SqProblem.cs` | `105aa51f8f962074288abad84da757ad` |
+| `Assets/SideQuest/LightingTools/Core/SideQuest.LightingTools.Core.Editor.asmdef` | `6a3b00b888f6f134ea607c20172dfffa` |
+| `Assets/SideQuest/LightingTools/Core/SqLightingCore.cs` | `1686ca8e3f7eac843b572a029cef4f32` |
+| `Assets/SideQuest/LightingTools/Core/Ui` | `2c2421feae840044fad78569fc7b022d` |
 | `Assets/SideQuest/LightingTools/Core/Ui/SqLog.cs` | `ee919557c5aea854e9abc6342ccafc1b` |
 | `Assets/SideQuest/LightingTools/Core/Ui/SqPreviewDraw.cs` | `00f3635c183d51845b2014be10a3dfed` |
 | `Assets/SideQuest/LightingTools/Core/Ui/SqSettings.cs` | `822d0209581fdc54098c392f8ff134d4` |
 | `Assets/SideQuest/LightingTools/Core/Ui/SqUndo.cs` | `bad45a61345793040835bda58f8608bb` |
+| `Assets/SideQuest/LightingTools/Core/Urp` | `96cde4b641e459b46b073b04107b4551` |
 | `Assets/SideQuest/LightingTools/Core/Urp/UrpFacts.cs` | `f3e0666f9737bbc4bbdacde34652a69f` |
 | `Assets/SideQuest/LightingTools/Core/Urp/UrpGuards.cs` | `011deda0fb8428640854167e0e11abdf` |
+| `Assets/SideQuest/LightingTools/LightProbes` | `09fb8e0c69ed94f4fb6aaea21101d931` |
 | `Assets/SideQuest/LightingTools/LightProbes/AdaptiveSampler.cs` | `ac8760f4e878ce4448518a7b8e44ee1b` |
 | `Assets/SideQuest/LightingTools/LightProbes/AgentSampler.cs` | `98fdcf2e2e753c544ba5ef9c566e46d4` |
 | `Assets/SideQuest/LightingTools/LightProbes/ContributeGiAssigner.cs` | `f7c1cd8d0ed78f64c93aa45bb06c4f35` |
@@ -70,7 +83,14 @@ packages that shipped the old one have to be republished together.
 | `Assets/SideQuest/LightingTools/LightProbes/ProbePaintMode.cs` | `f141debf75677ee4c8c0f25d1d8c5e25` |
 | `Assets/SideQuest/LightingTools/LightProbes/ProbeSampler.cs` | `9f806964bd8a64b47a32967afa1d3da4` |
 | `Assets/SideQuest/LightingTools/LightProbes/SideQuest.LightingTools.LightProbes.Editor.asmdef` | `44a00cf7f59342e469bd6a1507c02423` |
+| `Assets/SideQuest/LightingTools/Occlusion` | `5338eaa35f602f547b8a6b461efae0b0` |
+| `Assets/SideQuest/LightingTools/Occlusion/OccluderClassifier.cs` | `ccf2dec9e6e88b841b4ed45376b35f23` |
+| `Assets/SideQuest/LightingTools/Occlusion/OcclusionParameters.cs` | `5209484fd7950ac4a8c09ec19f995670` |
+| `Assets/SideQuest/LightingTools/Occlusion/OcclusionPlan.cs` | `af81445f458511f4996f155142b23adb` |
+| `Assets/SideQuest/LightingTools/Occlusion/OcclusionTool.cs` | `78d9232e0d33af24f8c2d7a246bbee74` |
+| `Assets/SideQuest/LightingTools/Occlusion/OcclusionWindow.cs` | `ce93e283301d0a148bfd60488cb57d1e` |
 | `Assets/SideQuest/LightingTools/Occlusion/SideQuest.LightingTools.Occlusion.Editor.asmdef` | `bc10bca39ad26194db4d2621715008d6` |
+| `Assets/SideQuest/LightingTools/ReflectionProbes` | `704c09ef582dd53468f940cdec2105c3` |
 | `Assets/SideQuest/LightingTools/ReflectionProbes/ReflectionProbeApplier.cs` | `73a717cd9a90d134d83c03c126b4abf9` |
 | `Assets/SideQuest/LightingTools/ReflectionProbes/ReflectionProbeClusterer.cs` | `6c46ddff94a1e4141bde757296462caa` |
 | `Assets/SideQuest/LightingTools/ReflectionProbes/ReflectionProbePlacer.cs` | `3b65db3235c148b42bb2172261a42e85` |
@@ -80,4 +100,4 @@ packages that shipped the old one have to be republished together.
 | `Assets/SideQuest/LightingTools/ReflectionProbes/ReflectionProbeWindow.cs` | `1e3276bb04378424bbc7e2229960005a` |
 | `Assets/SideQuest/LightingTools/ReflectionProbes/SideQuest.LightingTools.ReflectionProbes.Editor.asmdef` | `e68d4403e260904428cf921725986204` |
 
-64 entries.
+77 entries.
