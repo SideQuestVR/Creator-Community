@@ -1,0 +1,43 @@
+{
+  "suiteVersion": "1.0.0",
+  "note": "All five packages share one version. Core is embedded byte-identically in every tool package at the same path with the same GUIDs, so importing two tools overwrites rather than duplicates - see GUIDS.md. That only holds if the versions match, hence lockstep releases.",
+  "corePath": "Assets/SideQuest/LightingTools/Core",
+  "packageRoot": "Assets/SideQuest/LightingTools",
+  "packages": [
+    {
+      "id": "sidequest.lighting-core",
+      "name": "SideQuest Lighting Core",
+      "artifact": "SideQuestLightingCore",
+      "trees": ["Core"],
+      "description": "Shared scene analysis for the SideQuest lighting tools: renderer and material facts, URP pipeline facts, room segmentation, and the JSON report/plan handshake the other four packages build on. Useful on its own for reading a scene; it changes nothing by itself."
+    },
+    {
+      "id": "sidequest.light-probe-tools",
+      "name": "SideQuest Light Probe Tools",
+      "artifact": "SideQuestLightProbeTools",
+      "trees": ["Core", "LightProbes"],
+      "description": "Places light probes using one of three strategies - adaptive density from lights and geometry, a grid over the NavMesh or a mesh volume, or positions you paint or supply yourself - and assigns Contribute GI so small objects read their lighting from probes instead of taking lightmap space."
+    },
+    {
+      "id": "sidequest.reflection-probe-tools",
+      "name": "SideQuest Reflection Probe Tools",
+      "artifact": "SideQuestReflectionProbeTools",
+      "trees": ["Core", "ReflectionProbes"],
+      "description": "Finds the glossy surfaces in a scene, clusters them into capture points, and sizes each reflection probe's box, resolution, importance and blending against a cubemap memory budget. Probes you placed by hand are never modified."
+    },
+    {
+      "id": "sidequest.occlusion-tools",
+      "name": "SideQuest Occlusion Culling Tools",
+      "artifact": "SideQuestOcclusionTools",
+      "trees": ["Core", "Occlusion"],
+      "description": "Decides which geometry is large and solid enough to hide other geometry and which should merely be hidden, then derives Unity's three occlusion bake parameters from the scene's own room sizes and doorway widths rather than leaving them at defaults."
+    },
+    {
+      "id": "sidequest.light-bake-tools",
+      "name": "SideQuest Light Bake Tools",
+      "artifact": "SideQuestLightBakeTools",
+      "trees": ["Core", "Bake"],
+      "description": "Solves a lightmap resolution that fits a chosen atlas budget instead of leaving you to find it by baking, validates that lightmapped meshes actually have lightmap UVs, and runs the bake in the background so the Editor stays usable."
+    }
+  ]
+}

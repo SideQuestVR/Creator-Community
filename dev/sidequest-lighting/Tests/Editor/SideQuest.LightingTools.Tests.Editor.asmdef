@@ -1,0 +1,25 @@
+{
+    "name": "SideQuest.LightingTools.Tests.Editor",
+    "rootNamespace": "SideQuest.LightingTools.Tests",
+    "references": [
+        "SideQuest.LightingTools.Core.Editor",
+        "SideQuest.LightingTools.LightProbes.Editor",
+        "SideQuest.LightingTools.ReflectionProbes.Editor",
+        "SideQuest.LightingTools.Occlusion.Editor",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Universal.Editor",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Core.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

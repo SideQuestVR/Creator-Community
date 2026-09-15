@@ -1,0 +1,28 @@
+{
+    "name": "SideQuest.LightingTools.ReflectionProbes.Editor",
+    "rootNamespace": "SideQuest.LightingTools.ReflectionProbes",
+    "references": [
+        "SideQuest.LightingTools.Core.Editor",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Universal.Editor",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Core.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.ai.navigation",
+            "expression": "",
+            "define": "SQLT_AI_NAVIGATION"
+        }
+    ],
+    "noEngineReferences": false
+}
