@@ -9,6 +9,7 @@
     "packages/sidequest.reflection-probe-tools/1.0.0/listing.json",
     "packages/bobworks.portable-lighter/0.1.0/listing.json",
     "packages/bobworks.burning-stick/0.1.0/listing.json",
-    "packages/bobworks.blam-radio/0.1.0/listing.json"
+    "packages/bobworks.blam-radio/0.1.0/listing.json",
+    "packages/bobworks.flashlight/0.1.0/listing.json"
   ]
 }
