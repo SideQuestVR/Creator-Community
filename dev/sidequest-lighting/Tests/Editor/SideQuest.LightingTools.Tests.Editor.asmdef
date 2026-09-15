@@ -5,6 +5,7 @@
         "SideQuest.LightingTools.Core.Editor",
         "SideQuest.LightingTools.LightProbes.Editor",
         "SideQuest.LightingTools.ReflectionProbes.Editor",
+        "SideQuest.LightingTools.Occlusion.Editor",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Universal.Editor",
         "Unity.RenderPipelines.Core.Runtime",
