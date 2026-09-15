@@ -1,0 +1,58 @@
+[
+  {
+    "name": "PortableLighter",
+    "byteLength": 84520,
+    "sha256": "f31d737f59ed2bc56bc8b4312b67c645b5153ec08d05aaee2ac7ca322257befc",
+    "assets": [
+      "Assets/CreatorCommunity/PortableLighter/Audio/LighterClick.wav",
+      "Assets/CreatorCommunity/PortableLighter/Materials/Casing.mat",
+      "Assets/CreatorCommunity/LighterFlame/VisualScripting/LighterFlameMotion.asset",
+      "Assets/CreatorCommunity/LighterFlame/LighterFlame.asset",
+      "Assets/CreatorCommunity/PortableLighter/VisualScripting/Lighter.asset",
+      "Assets/CreatorCommunity/PortableLighter/Materials/DarkMetal.mat",
+      "Assets/CreatorCommunity/PortableProps/Editor/CreatorPropsMenu.cs",
+      "Assets/CreatorCommunity/PortableLighter/LICENSE.txt",
+      "Assets/CreatorCommunity/LighterFlame/LighterFlame.mat",
+      "Assets/CreatorCommunity/LighterFlame/LighterFlame.shader",
+      "Assets/CreatorCommunity/PortableLighter/Materials/BrushedMetal.mat",
+      "Assets/CreatorCommunity/PortableLighter/README.md",
+      "Assets/CreatorCommunity/PortableLighter/PortableLighter.prefab"
+    ]
+  },
+  {
+    "name": "BurningStick",
+    "byteLength": 51675,
+    "sha256": "18a76f8418ba3ecd9cc75110eb04f9540d36e386fbf5604d900e83c7bba8e5c7",
+    "assets": [
+      "Assets/CreatorCommunity/BurningStick/Materials/Wood.mat",
+      "Assets/CreatorCommunity/BurningStick/BurningStick.prefab",
+      "Assets/CreatorCommunity/BurningStick/Meshes/Stick.asset",
+      "Assets/CreatorCommunity/BurningStick/LICENSE.txt",
+      "Assets/CreatorCommunity/BurningStick/README.md",
+      "Assets/CreatorCommunity/BurningStick/VisualScripting/BurningEnd.asset",
+      "Assets/CreatorCommunity/LighterFlame/VisualScripting/LighterFlameMotion.asset",
+      "Assets/CreatorCommunity/LighterFlame/LighterFlame.asset",
+      "Assets/CreatorCommunity/PortableProps/Editor/CreatorPropsMenu.cs",
+      "Assets/CreatorCommunity/LighterFlame/LighterFlame.mat",
+      "Assets/CreatorCommunity/LighterFlame/LighterFlame.shader"
+    ]
+  },
+  {
+    "name": "BlamRadio",
+    "byteLength": 4070605,
+    "sha256": "1c732dc47626b85f05f1ccbd336214671d62387ab83fc5494c0d30302772b6ce",
+    "assets": [
+      "Assets/CreatorCommunity/BlamRadio/Materials/Speaker.mat",
+      "Assets/CreatorCommunity/BlamRadio/README.md",
+      "Assets/CreatorCommunity/BlamRadio/Materials/Trim.mat",
+      "Assets/CreatorCommunity/BlamRadio/BlamRadio.prefab",
+      "Assets/CreatorCommunity/BlamRadio/Materials/Body.mat",
+      "Assets/CreatorCommunity/PortableProps/Editor/CreatorPropsMenu.cs",
+      "Assets/CreatorCommunity/BlamRadio/Meshes/HorizontalHandle.asset",
+      "Assets/CreatorCommunity/BlamRadio/VisualScripting/RadioReturn.asset",
+      "Assets/CreatorCommunity/BlamRadio/LICENSE.txt",
+      "Assets/CreatorCommunity/BlamRadio/Audio/BlamTrack.mp3",
+      "Assets/CreatorCommunity/BlamRadio/Materials/Dial.mat"
+    ]
+  }
+]

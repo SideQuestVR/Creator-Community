@@ -1,0 +1,1 @@
+Six imported instances: unique IDs, changed layer, no automatic save, scene reopen persistence passed.

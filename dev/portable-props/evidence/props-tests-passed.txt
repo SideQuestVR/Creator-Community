@@ -1,0 +1,68 @@
+PortableLighter(Clone) has no missing scripts
+Creator Lighter - held-hand trigger toggle resolves
+Creator Lighter - held-hand trigger toggle has no invalid connections
+Lighter flame - anchored movement lag resolves
+Lighter flame - anchored movement lag has no invalid connections
+PortableLighter(Clone) has no missing scripts
+Creator Lighter - held-hand trigger toggle resolves
+Creator Lighter - held-hand trigger toggle has no invalid connections
+Lighter flame - anchored movement lag resolves
+Lighter flame - anchored movement lag has no invalid connections
+BurningStick(Clone) has no missing scripts
+Creator Burning Stick - independent end ignition resolves
+Creator Burning Stick - independent end ignition has no invalid connections
+Lighter flame - anchored movement lag resolves
+Lighter flame - anchored movement lag has no invalid connections
+Creator Burning Stick - independent end ignition resolves
+Creator Burning Stick - independent end ignition has no invalid connections
+Lighter flame - anchored movement lag resolves
+Lighter flame - anchored movement lag has no invalid connections
+BlamRadio(Clone) has no missing scripts
+Creator Radio - grab-aware idle and Finish return resolves
+Creator Radio - grab-aware idle and Finish return has no invalid connections
+Unheld trigger rejected
+Other hand rejected True
+Trigger toggles once True/0
+Held trigger does not repeat True/0
+Trigger toggles once True/1
+Held trigger does not repeat True/1
+Trigger toggles once True/2
+Held trigger does not repeat True/2
+Trigger toggles once True/3
+Held trigger does not repeat True/3
+Release extinguishes True
+Other hand rejected False
+Trigger toggles once False/0
+Held trigger does not repeat False/0
+Trigger toggles once False/1
+Held trigger does not repeat False/1
+Trigger toggles once False/2
+Held trigger does not repeat False/2
+Trigger toggles once False/3
+Held trigger does not repeat False/3
+Release extinguishes False
+Lighter instances have independent internal references
+Unlit source cannot ignite stick
+Distant opposite stick end rejected
+Lighter ignites touching stick end
+Contact does not reset burning timer
+Second stick end ignites independently
+Both end lifetimes are 80 seconds
+Expired end extinguishes without affecting other end
+Unconfigured source is ignored without exception
+Expired stick end relights with a fresh timer
+Burning stick can ignite another stick
+Radio grip matches original horizontal collider position and axis
+Radio preserves original collider dimensions and physical contact
+Radio preserves original cylinder grab radius
+Replacement horizontal handle follows the collider
+Every radio handle triangle faces outward
+Radio captures this scene's placement
+Radio has author's track, looping spatial playback
+Idle radio returns after five minutes
+Held radio does not return
+Non-owner does not move radio
+Finish trigger returns radio to its placement
+Return clears linear and angular velocity
+Creator SDK allow-list validation passes
+No errors during graph checks

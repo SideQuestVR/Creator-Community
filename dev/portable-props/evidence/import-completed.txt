@@ -1,0 +1,1 @@
+Three actual importPackageCompleted events and imported prefabs verified.
