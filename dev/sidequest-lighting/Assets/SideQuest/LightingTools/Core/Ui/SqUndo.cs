@@ -25,7 +25,12 @@ namespace SideQuest.LightingTools.Core
         /// A plan that placed 400 probes and reconfigured 12 renderers must undo as one
         /// step; 412 undo entries is functionally the same as no undo at all.
         /// </summary>
-        public struct Scope : IDisposable
+        /// <remarks>
+        /// A class, not a struct: a using-statement local is read-only, so a mutating
+        /// Dispose on a struct would operate on a defensive copy and the disposed flag
+        /// would never stick.
+        /// </remarks>
+        public sealed class Scope : IDisposable
         {
             readonly int _group;
             bool _disposed;

@@ -16,6 +16,7 @@ namespace SideQuest.LightingTools.Core
     /// State lives in a ScriptableSingleton so it survives a domain reload, which happens
     /// whenever scripts recompile between the preview and the screenshot.
     /// </summary>
+    [FilePath("Library/SideQuestLightingPreview.asset", FilePathAttribute.Location.ProjectFolder)]
     public sealed class SqPreviewDraw : ScriptableSingleton<SqPreviewDraw>
     {
         [System.Serializable]
