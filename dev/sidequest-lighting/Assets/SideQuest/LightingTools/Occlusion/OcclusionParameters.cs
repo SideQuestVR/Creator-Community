@@ -84,15 +84,30 @@ namespace SideQuest.LightingTools.Occlusion
         }
 
         /// <summary>
-        /// The narrowest passage between two zones.
+        /// Unity's own default, and the ceiling this solver will not exceed.
         ///
-        /// This is the number that decides whether a player standing in a doorway sees the
-        /// next room or watches it pop in. Zone segmentation already measured every
-        /// connection while finding the rooms, so it costs nothing to use the real value
-        /// instead of a guess.
+        /// Smallest Hole seals every gap narrower than itself. Raising it is therefore not
+        /// a mild tuning knob - it makes occluders progressively more solid, and the band
+        /// of space within roughly half this distance of any surface stops being described
+        /// reliably. The visible result is geometry vanishing when the camera is close to
+        /// it, which reads as a rendering bug rather than a bake setting.
         ///
-        /// Biased slightly below the measured width: the voxel grid quantises upward and
-        /// culling through a doorway looks far worse than a marginally larger data file.
+        /// An earlier version of this solver clamped to 0.5 and, on a scene whose narrowest
+        /// doorway measured 0.75m, shipped exactly that - the most aggressive value it
+        /// could produce. Hence a ceiling at Unity's default rather than above it.
+        /// </summary>
+        public const float MaxSmallestHole = 0.25f;
+
+        /// <summary>
+        /// The narrowest passage between two zones, biased well below it.
+        ///
+        /// This decides whether a player standing in a doorway sees the next room or
+        /// watches it pop in. Zone segmentation already measured every connection while
+        /// finding the rooms, so the real value is available instead of a guess.
+        ///
+        /// Half the measured width, not most of it. The error is asymmetric: too small
+        /// costs bake time and data, while too large makes geometry disappear in front of
+        /// the player. Only one of those is worth risking.
         /// </summary>
         static float SolveSmallestHole(SceneScan scan, SqProblemList problems)
         {
@@ -108,18 +123,20 @@ namespace SideQuest.LightingTools.Occlusion
                 }
             }
 
+            float cap = Mathf.Min(SqSettings.instance.occlusionMaxSmallestHole, MaxSmallestHole);
+
             if (narrowest == float.MaxValue)
             {
                 if (problems != null)
                 {
-                    problems.Add(CodeNoZoneGaps, SqSeverity.Info,
-                        "No connections between zones were found, so Smallest Hole falls back to 0.25m.")
+                    problems.Add(CodeNoZoneGaps, SqSeverity.Info, string.Format(
+                        "No connections between zones were found, so Smallest Hole falls back to {0}m.", SqFormat.Num(cap)))
                         .WithAction("If the scene has narrow doorways or windows, check that zone segmentation resolved them.");
                 }
-                return 0.25f;
+                return cap;
             }
 
-            return Mathf.Clamp(narrowest * 0.8f, 0.05f, 0.5f);
+            return Mathf.Clamp(narrowest * 0.5f, 0.05f, cap);
         }
 
         /// <summary>
@@ -198,9 +215,13 @@ namespace SideQuest.LightingTools.Occlusion
             parameters.SmallestOccluder = validation.Clamp("parameters.smallestOccluder",
                 source["smallestOccluder"].AsFloat(1.5f), 0.1f, 50f);
 
-            // Unity's own lower bound. Below this the bake is not merely slow, it fails.
+            // Capped at the settings ceiling rather than at Unity's upper limit. A plan is
+            // allowed to make occlusion more conservative but not more aggressive than the
+            // user's own setting, because the aggressive failure - geometry vanishing at
+            // close range - is the one nobody traces back to a bake parameter.
+            float cap = Mathf.Min(SqSettings.instance.occlusionMaxSmallestHole, MaxSmallestHole);
             parameters.SmallestHole = validation.Clamp("parameters.smallestHole",
-                source["smallestHole"].AsFloat(0.25f), 0.01f, 10f);
+                source["smallestHole"].AsFloat(cap), 0.01f, cap);
 
             parameters.BackfaceThreshold = validation.Clamp("parameters.backfaceThreshold",
                 source["backfaceThreshold"].AsFloat(100f), 5f, 100f);

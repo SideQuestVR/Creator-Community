@@ -167,8 +167,8 @@ namespace SideQuest.LightingTools.Occlusion
             OcclusionPlan plan = OcclusionPlan.Read(source, SqSettings.instance, validation);
             if (validation.Rejected) { context.FailApply(action, validation); return; }
 
-            List<OcclusionDecision> decisions =
-                OccluderClassifier.Classify(context.Scan, plan.MinOccluderFaceSize, context.Problems);
+            List<OcclusionDecision> decisions = OccluderClassifier.Classify(
+                context.Scan, plan.MinOccluderFaceSize, plan.MinOccluderThickness, context.Problems);
             plan.ApplyOverrides(decisions, validation);
 
             var result = new ApplyResult { ReportId = source.ReportId, Validation = validation };

@@ -44,8 +44,10 @@ namespace SideQuest.LightingTools.Occlusion
         public const string CodeMovingFlagged = "OC020_MOVING_FLAGGED";
         public const string CodeTransparentOccluder = "OC030_TRANSPARENT_OCCLUDER";
         public const string CodeNonStatic = "OC031_NOT_STATIC";
+        public const string CodeThinOccluder = "OC032_THIN_OCCLUDER";
 
-        public static List<OcclusionDecision> Classify(SceneScan scan, float minOccluderFaceSize, SqProblemList problems)
+        public static List<OcclusionDecision> Classify(
+            SceneScan scan, float minOccluderFaceSize, float minOccluderThickness, SqProblemList problems)
         {
             var decisions = new List<OcclusionDecision>();
 
@@ -53,6 +55,7 @@ namespace SideQuest.LightingTools.Occlusion
             int occludees = 0;
             int movingFlagged = 0;
             int demotedTransparent = 0;
+            int tooThin = 0;
             var nonStatic = new List<int>();
 
             for (int i = 0; i < scan.Renderers.Count; i++)
@@ -95,27 +98,35 @@ namespace SideQuest.LightingTools.Occlusion
                 decision.WantOccludee = true;
                 occludees++;
 
-                decision.WantOccluder = r.IsViableOccluder(minOccluderFaceSize);
+                decision.WantOccluder = r.IsViableOccluder(minOccluderFaceSize, minOccluderThickness);
                 if (decision.WantOccluder)
                 {
                     occluders++;
-                    decision.Reason = string.Format("solid opaque geometry with a {0:0.##}m face", r.OccluderFaceSize);
+                    decision.Reason = string.Format("solid opaque geometry, {0}m face and {1}m thick",
+                        SqFormat.Num(r.OccluderFaceSize), SqFormat.Num(r.OccluderThickness));
                 }
                 else
                 {
-                    decision.Reason = DescribeWhyNotOccluder(r, minOccluderFaceSize);
+                    decision.Reason = DescribeWhyNotOccluder(r, minOccluderFaceSize, minOccluderThickness);
                     if (r.OccluderStatic && !r.AllOpaque) demotedTransparent++;
+                    if (r.OccluderThickness < minOccluderThickness && r.OccluderFaceSize >= minOccluderFaceSize) tooThin++;
                 }
 
                 decisions.Add(decision);
             }
 
-            Report(problems, occluders, occludees, movingFlagged, demotedTransparent, nonStatic);
+            Report(problems, occluders, occludees, movingFlagged, demotedTransparent, tooThin, nonStatic);
             return decisions;
         }
 
-        static string DescribeWhyNotOccluder(RendererFacts r, float minOccluderFaceSize)
+        static string DescribeWhyNotOccluder(RendererFacts r, float minOccluderFaceSize, float minOccluderThickness)
         {
+            if (r.OccluderThickness < minOccluderThickness)
+            {
+                return string.Format("only {0}m thick, too flat to voxelise into a solid occluder",
+                    SqFormat.Num(r.OccluderThickness));
+            }
+
             if (!r.AllOpaque) return "not fully opaque, so it cannot block sight lines";
             if (r.AnyDoubleSided) return "double-sided, which occlusion treats as having no solid interior";
             if (r.AnyMissingMaterial) return "has a missing material, so its opacity is unknown";
@@ -132,7 +143,7 @@ namespace SideQuest.LightingTools.Occlusion
         }
 
         static void Report(SqProblemList problems, int occluders, int occludees,
-            int movingFlagged, int demotedTransparent, List<int> nonStatic)
+            int movingFlagged, int demotedTransparent, int tooThin, List<int> nonStatic)
         {
             if (problems == null) return;
 
@@ -159,6 +170,15 @@ namespace SideQuest.LightingTools.Occlusion
                     demotedTransparent))
                     .WithCount(demotedTransparent)
                     .WithAction("Apply the plan to demote them to occludee only.");
+            }
+
+            if (tooThin > 0)
+            {
+                problems.Add(CodeThinOccluder, SqSeverity.Info, string.Format(
+                    "{0} large but very flat renderer(s) were excluded from occluding. Umbra voxelises the scene, and a surface thinner than a voxel gets fattened to fill one - which invents occlusion and makes nearby geometry vanish.",
+                    tooThin))
+                    .WithCount(tooThin)
+                    .WithAction("Give the geometry real thickness if it is meant to block sight lines, such as a wall built from a box rather than a plane.");
             }
 
             if (nonStatic.Count > 0)

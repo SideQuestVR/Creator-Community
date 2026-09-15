@@ -69,6 +69,12 @@ namespace SideQuest.LightingTools.Core
         [Tooltip("An object is a viable occluder only if its second-largest bounds axis reaches this. Thin walls qualify; small props do not.")]
         public float minOccluderFaceSize = 1.5f;
 
+        [Tooltip("Ceiling on the solved Smallest Hole. Raising this makes occluders more solid and can make geometry vanish when the camera is close to it. Unity's own default is 0.25.")]
+        public float occlusionMaxSmallestHole = 0.25f;
+
+        [Tooltip("Geometry thinner than this never becomes an occluder. Paper-thin surfaces cannot be voxelised reliably and produce phantom occlusion.")]
+        public float minOccluderThickness = 0.05f;
+
         // ---- behaviour ----
 
         [Tooltip("Log extra non-machine-readable detail to the console.")]

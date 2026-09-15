@@ -26,6 +26,7 @@ namespace SideQuest.LightingTools.Occlusion
         public const int MaxOverrides = 20000;
 
         public float MinOccluderFaceSize = 1.5f;
+        public float MinOccluderThickness = 0.05f;
         public OcclusionParameters Parameters = new OcclusionParameters();
 
         /// <summary>True to write static flags; false to set bake parameters only.</summary>
@@ -40,9 +41,14 @@ namespace SideQuest.LightingTools.Occlusion
         public static OcclusionPlan Recommend(SceneScan scan, SqSettings settings, SqProblemList problems,
             out List<OcclusionDecision> decisions)
         {
-            var plan = new OcclusionPlan { MinOccluderFaceSize = settings.minOccluderFaceSize };
+            var plan = new OcclusionPlan
+            {
+                MinOccluderFaceSize = settings.minOccluderFaceSize,
+                MinOccluderThickness = settings.minOccluderThickness
+            };
 
-            decisions = OccluderClassifier.Classify(scan, plan.MinOccluderFaceSize, problems);
+            decisions = OccluderClassifier.Classify(
+                scan, plan.MinOccluderFaceSize, plan.MinOccluderThickness, problems);
             plan.Parameters = OcclusionParameters.Solve(scan, decisions, problems);
 
             return plan;
@@ -70,6 +76,7 @@ namespace SideQuest.LightingTools.Occlusion
         {
             w.Prop("assignFlags", AssignFlags);
             w.Prop("minOccluderFaceSize", MinOccluderFaceSize);
+            w.Prop("minOccluderThickness", MinOccluderThickness);
             Parameters.Write(w);
 
             if (decisions != null) WriteSummary(w, decisions);
@@ -126,6 +133,9 @@ namespace SideQuest.LightingTools.Occlusion
             plan.AssignFlags = source["assignFlags"].AsBool(true);
             plan.MinOccluderFaceSize = validation.Clamp("minOccluderFaceSize",
                 source["minOccluderFaceSize"].AsFloat(settings.minOccluderFaceSize), 0.05f, 50f);
+
+            plan.MinOccluderThickness = validation.Clamp("minOccluderThickness",
+                source["minOccluderThickness"].AsFloat(settings.minOccluderThickness), 0f, 10f);
 
             plan.Parameters = OcclusionParameters.Read(source["parameters"], validation);
 

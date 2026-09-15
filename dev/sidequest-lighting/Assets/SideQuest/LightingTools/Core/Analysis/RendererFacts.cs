@@ -64,6 +64,13 @@ namespace SideQuest.LightingTools.Core
         /// </summary>
         public float OccluderFaceSize;
 
+        /// <summary>
+        /// Smallest bounds axis. An occluder needs some thickness: Umbra voxelises the
+        /// scene, and a surface thinner than a voxel is either dropped or fattened to fill
+        /// one, the second of which invents occlusion that is not there.
+        /// </summary>
+        public float OccluderThickness;
+
         public int ZoneId = -1;
 
         SqObjectId _id;
@@ -113,20 +120,15 @@ namespace SideQuest.LightingTools.Core
             f.WorldBounds = b;
             f.SurfaceArea = 2f * (size.x * size.y + size.y * size.z + size.z * size.x);
 
-            // Sort the three axes to find the middle one.
+            // Sort the three axes. The middle one says whether the object has a substantial
+            // face, and the smallest says how thick it is - both matter for occlusion, and
+            // for opposite reasons.
             float a = size.x, c = size.y, d = size.z;
-            float mid;
-            if (a >= c)
-            {
-                if (c >= d) mid = c;
-                else mid = a >= d ? d : a;
-            }
-            else
-            {
-                if (a >= d) mid = a;
-                else mid = c >= d ? d : c;
-            }
-            f.OccluderFaceSize = mid;
+            float lo = Mathf.Min(a, Mathf.Min(c, d));
+            float hi = Mathf.Max(a, Mathf.Max(c, d));
+
+            f.OccluderThickness = lo;
+            f.OccluderFaceSize = a + c + d - lo - hi;
         }
 
         static void ReadMesh(Renderer renderer, RendererFacts f)
@@ -223,10 +225,15 @@ namespace SideQuest.LightingTools.Core
         /// bounds magnitude was small, which rejects every thin wall - the one thing that
         /// occludes best - while accepting long thin props that occlude nothing.
         /// </summary>
-        public bool IsViableOccluder(float minOccluderFaceSize)
+        public bool IsViableOccluder(float minOccluderFaceSize, float minOccluderThickness = 0f)
         {
             if (!HasBounds || MayMove || IsSkinned || !IsStatic) return false;
             if (OccluderFaceSize < minOccluderFaceSize) return false;
+
+            // A flat plane has a huge face and no substance. It cannot be voxelised into a
+            // solid, so treating it as an occluder produces occlusion that does not match
+            // the geometry - most visibly as objects vanishing at close range.
+            if (OccluderThickness < minOccluderThickness) return false;
             if (!AllOpaque || AnyMissingMaterial) return false;
             if (AnyDoubleSided) return false;
 
