@@ -1,0 +1,1 @@
+Actual spotlight on/off pixel check: mean luminance increase=0.0419080248721487; brighter pixels=33242.

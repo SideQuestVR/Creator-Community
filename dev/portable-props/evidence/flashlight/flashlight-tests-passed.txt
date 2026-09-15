@@ -1,0 +1,27 @@
+Flashlight has no missing scripts
+Initial mounted gravity and original mass preserved
+Physical body and grab layers preserved
+Original cylindrical grab collider preserved
+Original grab radius preserved
+Original single-shot trigger settings preserved
+SDK transform sync and grab ownership configured
+Flashlight graph connections valid
+Dropping keeps the current light state, as in Forest
+Original no-shadow beam parameters preserved
+Beam points out of the lens with culling override
+Native ownership calls remain in the shipped graph
+Starts with beam and glow off True
+First grab enables gravity True
+Trigger keeps state, beam and glow together True/0
+Trigger keeps state, beam and glow together True/1
+Trigger keeps state, beam and glow together True/2
+Trigger keeps state, beam and glow together True/3
+Starts with beam and glow off False
+First grab enables gravity False
+Trigger keeps state, beam and glow together False/0
+Trigger keeps state, beam and glow together False/1
+Trigger keeps state, beam and glow together False/2
+Trigger keeps state, beam and glow together False/3
+Separate flashlight references and light state
+Creator SDK allow-list passes including flashlight
+No errors during flashlight graph checks
