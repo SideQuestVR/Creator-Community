@@ -25,7 +25,7 @@ namespace SideQuest.LightingTools.Bake
         public const string CodePredictionMiss = "LB050_PREDICTION_MISS";
 
         const string BakeStartedKey = "SideQuest.LightingTools.Bake.StartedTicks";
-        const string PredictedAtlasKey = "SideQuest.LightingTools.Bake.PredictedAtlases";
+        const string PredictedTexelKey = "SideQuest.LightingTools.Bake.PredictedTexels";
 
         [InitializeOnLoadMethod]
         static void Register()
@@ -169,7 +169,11 @@ namespace SideQuest.LightingTools.Bake
             result.Stat("estimatedAtlases", after.Atlases);
             result.Stat("directional", plan.Directional ? "combined" : "non-directional");
 
-            SessionState.SetFloat(PredictedAtlasKey, after.Atlases);
+            // Texels, not atlas pages. Unity sizes atlases to fit rather than filling fixed
+            // ones, so it will happily emit one large page plus a small scrap - and
+            // comparing page counts then reports a 100% error for an estimate that was
+            // within a third. Texels are the quantity the estimator actually predicts.
+            SessionState.SetFloat(PredictedTexelKey, (float)after.Texels);
 
             context.MarkSceneDirty();
             context.FinishApply(action, result);
@@ -270,8 +274,9 @@ namespace SideQuest.LightingTools.Bake
             LightmapData[] lightmaps = LightmapSettings.lightmaps;
             int atlasCount = lightmaps != null ? lightmaps.Length : 0;
             long bytes = EstimateLightmapBytes(lightmaps);
+            long actualTexels = CountLightmapTexels(lightmaps);
 
-            float predicted = SessionState.GetFloat(PredictedAtlasKey, -1f);
+            float predicted = SessionState.GetFloat(PredictedTexelKey, -1f);
 
             var w = new SqJsonWriter();
             w.BeginObject();
@@ -283,10 +288,16 @@ namespace SideQuest.LightingTools.Bake
             w.Prop("progress", progress);
             w.Prop("elapsedSeconds", (float)elapsed);
             w.Prop("atlasCount", atlasCount);
+            w.Prop("atlasSizes", DescribeAtlasSizes(lightmaps));
+            w.Prop("actualTexels", actualTexels);
             w.Prop("lightmapBytes", bytes);
             w.Prop("lightmapMB", bytes / 1048576f);
             w.Prop("hasLightingDataAsset", Lightmapping.lightingDataAsset != null);
-            if (predicted >= 0f) w.Prop("predictedAtlases", predicted);
+            if (predicted > 0f)
+            {
+                w.Prop("predictedTexels", predicted);
+                if (actualTexels > 0) w.Prop("predictionRatio", (float)(actualTexels / (double)predicted));
+            }
             w.EndObject();
 
             string path = StatusPath(context.Scan);
@@ -303,38 +314,79 @@ namespace SideQuest.LightingTools.Bake
                 "progress", SqFormat.Num(progress),
                 "elapsed", SqFormat.Num((float)elapsed),
                 "atlases", atlasCount.ToString(),
+                "texels", actualTexels.ToString(),
                 "lightmapMB", SqFormat.Num(bytes / 1048576f),
                 "file", ReportPaths.ToProjectRelative(path));
 
-            if (!running && atlasCount > 0 && predicted >= 0f) ComparePrediction(predicted, atlasCount);
+            if (!running && actualTexels > 0 && predicted > 0f) ComparePrediction(predicted, actualTexels);
         }
 
         /// <summary>
-        /// Checks the atlas estimate against what the bake actually produced.
+        /// Checks the texel estimate against what the bake actually produced.
         ///
         /// The estimator is the least trustworthy arithmetic in this tool - it works from
         /// bounding-box area rather than real UV charts, so it can only ever be
         /// approximately right. Saying so out loud after every bake is what keeps it
         /// honest, and gives anyone tuning it real numbers to tune against.
+        ///
+        /// Within a factor of two counts as working. The estimate exists to answer "will
+        /// this fit in two pages or eleven", and at that question being out by a third
+        /// changes nothing, while being out by four times changes everything.
         /// </summary>
-        static void ComparePrediction(float predicted, int actual)
+        static void ComparePrediction(float predicted, long actual)
         {
-            float predictedPages = Mathf.Max(1f, Mathf.Ceil(predicted));
-            float error = Mathf.Abs(predictedPages - actual) / Mathf.Max(actual, 1);
+            double ratio = actual / (double)predicted;
 
-            if (error <= 0.5f)
+            if (ratio >= 0.5 && ratio <= 2.0)
             {
                 SqLog.Ok(LightBakePlan.ToolId, "bake-prediction",
-                    "predicted", SqFormat.Num(predictedPages),
-                    "actual", actual.ToString());
+                    "predictedTexels", SqFormat.Num(predicted),
+                    "actualTexels", actual.ToString(),
+                    "ratio", SqFormat.Num((float)ratio));
                 return;
             }
 
             SqLog.Warn(LightBakePlan.ToolId, "bake-prediction",
                 "code", CodePredictionMiss,
-                "predicted", SqFormat.Num(predictedPages),
-                "actual", actual.ToString(),
-                "msg", "the atlas estimate was well off; it works from bounding-box area, not real UV charts");
+                "predictedTexels", SqFormat.Num(predicted),
+                "actualTexels", actual.ToString(),
+                "ratio", SqFormat.Num((float)ratio),
+                "msg", "texel estimate out by more than a factor of two; it works from bounding-box area, not real UV charts");
+        }
+
+        static long CountLightmapTexels(LightmapData[] lightmaps)
+        {
+            if (lightmaps == null) return 0;
+
+            long total = 0;
+            for (int i = 0; i < lightmaps.Length; i++)
+            {
+                Texture2D color = lightmaps[i].lightmapColor;
+                if (color != null) total += (long)color.width * color.height;
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// Atlas dimensions as text, because the page COUNT misleads on its own: Unity
+        /// sizes pages to fit, so "2 atlases" is as likely to be one large page plus a
+        /// scrap as it is two full ones.
+        /// </summary>
+        static string DescribeAtlasSizes(LightmapData[] lightmaps)
+        {
+            if (lightmaps == null || lightmaps.Length == 0) return "none";
+
+            var sb = new System.Text.StringBuilder();
+            for (int i = 0; i < lightmaps.Length; i++)
+            {
+                Texture2D color = lightmaps[i].lightmapColor;
+                if (color == null) continue;
+
+                if (sb.Length > 0) sb.Append(", ");
+                sb.Append(color.width).Append("x").Append(color.height);
+            }
+
+            return sb.Length == 0 ? "none" : sb.ToString();
         }
 
         static long EstimateLightmapBytes(LightmapData[] lightmaps)
