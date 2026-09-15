@@ -32,6 +32,14 @@ namespace SideQuest.LightingTools.Occlusion
         /// <summary>True to write static flags; false to set bake parameters only.</summary>
         public bool AssignFlags = true;
 
+        /// <summary>
+        /// False keeps whatever Smallest Occluder / Smallest Hole / Backface Threshold are
+        /// already set. Once someone has tuned these against their own world by eye, an
+        /// apply that silently reset them would undo the only reliable information anyone
+        /// has about that scene.
+        /// </summary>
+        public bool AssignBakeParameters = true;
+
         /// <summary>GlobalObjectId to forced occluder state. Absent means follow the classifier.</summary>
         public Dictionary<string, bool> OccluderOverrides = new Dictionary<string, bool>();
 
@@ -44,12 +52,13 @@ namespace SideQuest.LightingTools.Occlusion
             var plan = new OcclusionPlan
             {
                 MinOccluderFaceSize = ResolveFaceThreshold(scan, settings),
-                MinOccluderThickness = settings.minOccluderThickness
+                MinOccluderThickness = settings.minOccluderThickness,
+                AssignBakeParameters = settings.writeBakeParametersOnApply
             };
 
             decisions = OccluderClassifier.Classify(
                 scan, plan.MinOccluderFaceSize, plan.MinOccluderThickness, problems);
-            plan.Parameters = OcclusionParameters.Solve(scan, decisions, problems);
+            plan.Parameters = OcclusionParameters.Solve(scan, decisions, plan.MinOccluderFaceSize, problems);
 
             return plan;
         }
@@ -97,6 +106,7 @@ namespace SideQuest.LightingTools.Occlusion
         public void WriteBody(SqJsonWriter w, List<OcclusionDecision> decisions)
         {
             w.Prop("assignFlags", AssignFlags);
+            w.Prop("assignBakeParameters", AssignBakeParameters);
             w.Prop("minOccluderFaceSize", MinOccluderFaceSize);
             w.Prop("minOccluderThickness", MinOccluderThickness);
             Parameters.Write(w);
@@ -153,6 +163,7 @@ namespace SideQuest.LightingTools.Occlusion
             var plan = new OcclusionPlan();
 
             plan.AssignFlags = source["assignFlags"].AsBool(true);
+            plan.AssignBakeParameters = source["assignBakeParameters"].AsBool(true);
             plan.MinOccluderFaceSize = validation.Clamp("minOccluderFaceSize",
                 source["minOccluderFaceSize"].AsFloat(settings.minOccluderFaceSize), 0.05f, 50f);
 

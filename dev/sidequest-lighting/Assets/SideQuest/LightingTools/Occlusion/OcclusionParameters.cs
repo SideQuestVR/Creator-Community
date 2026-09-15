@@ -42,52 +42,42 @@ namespace SideQuest.LightingTools.Occlusion
         /// Derives all three from the scan.
         /// </summary>
         public static OcclusionParameters Solve(
-            SceneScan scan, List<OcclusionDecision> decisions, SqProblemList problems)
+            SceneScan scan, List<OcclusionDecision> decisions, float faceThreshold, SqProblemList problems)
         {
             var parameters = new OcclusionParameters();
 
-            parameters.SmallestOccluder = SolveSmallestOccluder(decisions);
+            parameters.SmallestOccluder = SolveSmallestOccluder(faceThreshold);
             parameters.SmallestHole = SolveSmallestHole(scan, problems);
             parameters.BackfaceThreshold = SolveBackfaceThreshold(scan);
 
             parameters.EstimatedCells = EstimateCells(scan, parameters.SmallestHole);
             parameters.Rationale = string.Format(
-                "occluder just under the smallest of {0} flagged occluder faces, hole at half the narrowest zone connection",
-                CountOccluders(decisions));
+                "occluder from the {0}m face threshold that flagged {1} occluders, hole at half the narrowest zone connection",
+                SqFormat.Num(faceThreshold), CountOccluders(decisions));
 
             CheckCellBudget(parameters, problems);
             return parameters;
         }
 
         /// <summary>
-        /// Just under the smallest face the classifier actually flagged.
+        /// The same threshold the classifier used, minus a hair.
         ///
-        /// Umbra ignores any occluder smaller than this, so the two thresholds have to
-        /// agree. An earlier version took the 25th percentile, which flagged a quarter of
-        /// its own occluders below the size Umbra would consider - marking geometry as an
-        /// occluder that then does nothing, while still costing data.
+        /// There is only one question here - how big must something be to occlude - and
+        /// answering it twice guarantees the answers drift. Both earlier attempts drifted.
+        /// The 25th percentile of flagged faces sat above the flagging threshold, so a
+        /// quarter of the flagged occluders were below what Umbra would even consider:
+        /// they cost data and occluded nothing. Taking the minimum instead let one
+        /// marginal object that had squeaked past the threshold drag Umbra's bar back down
+        /// below it, which is how a scene ends up occluding from furniture.
         ///
-        /// Taking the minimum keeps the flagged set and Umbra's threshold consistent, and
-        /// it no longer drags the bake down, because the classifier's own bar is now high
-        /// enough that nothing small reaches here.
+        /// Deriving it from the threshold directly makes the flagged set exactly the set
+        /// Umbra uses, whatever that threshold happens to be.
         /// </summary>
-        static float SolveSmallestOccluder(List<OcclusionDecision> decisions)
+        static float SolveSmallestOccluder(float faceThreshold)
         {
-            float smallest = float.MaxValue;
-
-            for (int i = 0; i < decisions.Count; i++)
-            {
-                if (!decisions[i].WantOccluder) continue;
-
-                float face = decisions[i].Renderer.OccluderFaceSize;
-                if (face < smallest) smallest = face;
-            }
-
-            if (smallest == float.MaxValue) return 2f;
-
-            // A little under, so floating-point comparison inside Umbra cannot exclude the
-            // very object the threshold was derived from.
-            return Mathf.Clamp(smallest * 0.95f, 0.5f, 10f);
+            // Slightly under, so floating-point comparison inside Umbra cannot exclude an
+            // object sitting exactly on the threshold.
+            return Mathf.Clamp(faceThreshold * 0.95f, 0.5f, 20f);
         }
 
         /// <summary>

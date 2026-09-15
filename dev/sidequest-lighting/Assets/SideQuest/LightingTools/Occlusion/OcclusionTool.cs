@@ -194,7 +194,7 @@ namespace SideQuest.LightingTools.Occlusion
             using (SqUndo.Scope scope = SqUndo.Group("Apply Occlusion Plan"))
             {
                 int changed = plan.AssignFlags ? OccluderClassifier.Apply(decisions) : 0;
-                ApplyBakeParameters(plan.Parameters);
+                if (plan.AssignBakeParameters) ApplyBakeParameters(plan.Parameters);
 
                 result.Updated = changed;
                 result.UndoGroup = scope.GroupId;

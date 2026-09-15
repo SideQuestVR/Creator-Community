@@ -70,13 +70,16 @@ namespace SideQuest.LightingTools.Core
         public float minOccluderFaceSize = 2f;
 
         [Tooltip("Occluder face size as a multiple of ceiling height. An occluder has to be able to block a room-sized sight line, so it is sized against the room rather than by an absolute guess.")]
-        public float occluderCeilingFraction = 0.8f;
+        public float occluderCeilingFraction = 1f;
 
         [Tooltip("Ceiling on the solved Smallest Hole. Raising this makes occluders more solid and can make geometry vanish when the camera is close to it. Unity's own default is 0.25.")]
         public float occlusionMaxSmallestHole = 0.25f;
 
         [Tooltip("Geometry thinner than this never becomes an occluder. Paper-thin surfaces cannot be voxelised reliably and produce phantom occlusion.")]
         public float minOccluderThickness = 0.05f;
+
+        [Tooltip("Untick to keep the Smallest Occluder / Smallest Hole / Backface Threshold you set by hand. Applying a plan will then change static flags only. Values tuned against a real world by eye beat anything this tool infers.")]
+        public bool writeBakeParametersOnApply = true;
 
         // ---- behaviour ----
 

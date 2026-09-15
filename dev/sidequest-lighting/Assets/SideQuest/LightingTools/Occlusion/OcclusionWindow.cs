@@ -75,9 +75,23 @@ namespace SideQuest.LightingTools.Occlusion
             EditorGUILayout.EndScrollView();
         }
 
-        static void DrawBakeParameters()
+        void DrawBakeParameters()
         {
             EditorGUILayout.LabelField("Bake parameters (project-wide)", EditorStyles.boldLabel);
+
+            var settings = SqSettings.instance;
+
+            EditorGUI.BeginChangeCheck();
+            settings.writeBakeParametersOnApply = EditorGUILayout.Toggle(
+                new GUIContent("Apply writes these",
+                    "Untick to keep values you tuned by hand. Applying a plan then changes static flags only."),
+                settings.writeBakeParametersOnApply);
+            if (EditorGUI.EndChangeCheck()) settings.Persist();
+
+            if (!settings.writeBakeParametersOnApply)
+            {
+                EditorGUILayout.HelpBox("Apply will not change these. Your tuned values are kept.", MessageType.Info);
+            }
 
             EditorGUI.BeginChangeCheck();
 

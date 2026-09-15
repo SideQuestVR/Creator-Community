@@ -155,6 +155,7 @@ namespace SideQuest.LightingTools.Core
                 AssignRenderersToZones(scan);
                 AssignLightsToZones(scan);
                 ComputeZoneAggregates(scan);
+                RefineCeilingHeight(scan);
 
                 if (scan.Grid.UsedRendererFallback && problems != null)
                 {
@@ -306,6 +307,35 @@ namespace SideQuest.LightingTools.Core
             {
                 SqLog.Detail("navmesh read failed: " + e.Message);
             }
+        }
+
+        /// <summary>
+        /// Replaces the scene-bounds ceiling guess with the median room height.
+        ///
+        /// Scene bounds Y is a poor proxy for how tall a room is: one tall atrium, a
+        /// skybox proxy or a stray far-off object pushes it to the clamp, and anything
+        /// derived from it then describes a building nobody is standing in. Once zones
+        /// exist, each one's height is the actual height of a room, and the median of
+        /// those is what "ceiling height" was always meant to mean.
+        ///
+        /// This matters most for occlusion, where the occluder size threshold is expressed
+        /// as a fraction of it.
+        /// </summary>
+        static void RefineCeilingHeight(SceneScan scan)
+        {
+            if (scan.Zones.Count == 0) return;
+
+            var heights = new List<float>(scan.Zones.Count);
+            for (int i = 0; i < scan.Zones.Count; i++)
+            {
+                if (scan.Zones[i].IsExterior) continue;
+                heights.Add(scan.Zones[i].Bounds.size.y);
+            }
+
+            if (heights.Count == 0) return;
+
+            heights.Sort();
+            scan.Scale.CeilingHeightEstimate = Mathf.Clamp(Percentile.OfSorted(heights, 0.5f), 2.2f, 12f);
         }
 
         static void AssignRenderersToZones(SceneScan scan)
