@@ -66,8 +66,11 @@ namespace SideQuest.LightingTools.Core
 
         // ---- occlusion defaults ----
 
-        [Tooltip("An object is a viable occluder only if its second-largest bounds axis reaches this. Thin walls qualify; small props do not.")]
-        public float minOccluderFaceSize = 1.5f;
+        [Tooltip("Absolute floor on occluder face size. The effective threshold is usually higher - it scales with the scene so that only structural geometry qualifies.")]
+        public float minOccluderFaceSize = 2f;
+
+        [Tooltip("Occluder face size as a multiple of ceiling height. An occluder has to be able to block a room-sized sight line, so it is sized against the room rather than by an absolute guess.")]
+        public float occluderCeilingFraction = 0.8f;
 
         [Tooltip("Ceiling on the solved Smallest Hole. Raising this makes occluders more solid and can make geometry vanish when the camera is close to it. Unity's own default is 0.25.")]
         public float occlusionMaxSmallestHole = 0.25f;

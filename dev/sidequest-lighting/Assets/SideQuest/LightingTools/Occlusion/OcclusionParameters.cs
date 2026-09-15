@@ -52,7 +52,7 @@ namespace SideQuest.LightingTools.Occlusion
 
             parameters.EstimatedCells = EstimateCells(scan, parameters.SmallestHole);
             parameters.Rationale = string.Format(
-                "occluder from the 25th percentile of {0} occluder faces, hole from the narrowest zone connection",
+                "occluder just under the smallest of {0} flagged occluder faces, hole at half the narrowest zone connection",
                 CountOccluders(decisions));
 
             CheckCellBudget(parameters, problems);
@@ -60,27 +60,34 @@ namespace SideQuest.LightingTools.Occlusion
         }
 
         /// <summary>
-        /// The 25th percentile of actual occluder face sizes.
+        /// Just under the smallest face the classifier actually flagged.
         ///
-        /// The smallest thing worth treating as an occluder, rather than an absolute guess.
-        /// A percentile instead of the minimum because one stray small wall segment should
-        /// not drag the whole bake down to its size - which costs bake time and data for
-        /// almost no extra culling.
+        /// Umbra ignores any occluder smaller than this, so the two thresholds have to
+        /// agree. An earlier version took the 25th percentile, which flagged a quarter of
+        /// its own occluders below the size Umbra would consider - marking geometry as an
+        /// occluder that then does nothing, while still costing data.
+        ///
+        /// Taking the minimum keeps the flagged set and Umbra's threshold consistent, and
+        /// it no longer drags the bake down, because the classifier's own bar is now high
+        /// enough that nothing small reaches here.
         /// </summary>
         static float SolveSmallestOccluder(List<OcclusionDecision> decisions)
         {
-            var faces = new List<float>();
+            float smallest = float.MaxValue;
 
             for (int i = 0; i < decisions.Count; i++)
             {
                 if (!decisions[i].WantOccluder) continue;
-                faces.Add(decisions[i].Renderer.OccluderFaceSize);
+
+                float face = decisions[i].Renderer.OccluderFaceSize;
+                if (face < smallest) smallest = face;
             }
 
-            if (faces.Count == 0) return 1.5f;
+            if (smallest == float.MaxValue) return 2f;
 
-            faces.Sort();
-            return Mathf.Clamp(Percentile.OfSorted(faces, 0.25f), 0.5f, 2.5f);
+            // A little under, so floating-point comparison inside Umbra cannot exclude the
+            // very object the threshold was derived from.
+            return Mathf.Clamp(smallest * 0.95f, 0.5f, 10f);
         }
 
         /// <summary>

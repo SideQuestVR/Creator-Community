@@ -45,6 +45,8 @@ namespace SideQuest.LightingTools.Occlusion
         public const string CodeTransparentOccluder = "OC030_TRANSPARENT_OCCLUDER";
         public const string CodeNonStatic = "OC031_NOT_STATIC";
         public const string CodeThinOccluder = "OC032_THIN_OCCLUDER";
+        public const string CodeSmallOccluder = "OC033_SMALL_OCCLUDER";
+        public const string CodeTooManyOccluders = "OC034_TOO_MANY_OCCLUDERS";
 
         public static List<OcclusionDecision> Classify(
             SceneScan scan, float minOccluderFaceSize, float minOccluderThickness, SqProblemList problems)
@@ -56,6 +58,7 @@ namespace SideQuest.LightingTools.Occlusion
             int movingFlagged = 0;
             int demotedTransparent = 0;
             int tooThin = 0;
+            int tooSmall = 0;
             var nonStatic = new List<int>();
 
             for (int i = 0; i < scan.Renderers.Count; i++)
@@ -110,12 +113,14 @@ namespace SideQuest.LightingTools.Occlusion
                     decision.Reason = DescribeWhyNotOccluder(r, minOccluderFaceSize, minOccluderThickness);
                     if (r.OccluderStatic && !r.AllOpaque) demotedTransparent++;
                     if (r.OccluderThickness < minOccluderThickness && r.OccluderFaceSize >= minOccluderFaceSize) tooThin++;
+                    if (r.OccluderFaceSize < minOccluderFaceSize && r.AllOpaque) tooSmall++;
                 }
 
                 decisions.Add(decision);
             }
 
-            Report(problems, occluders, occludees, movingFlagged, demotedTransparent, tooThin, nonStatic);
+            Report(problems, occluders, occludees, movingFlagged, demotedTransparent, tooThin, tooSmall,
+                minOccluderFaceSize, nonStatic);
             return decisions;
         }
 
@@ -143,7 +148,8 @@ namespace SideQuest.LightingTools.Occlusion
         }
 
         static void Report(SqProblemList problems, int occluders, int occludees,
-            int movingFlagged, int demotedTransparent, int tooThin, List<int> nonStatic)
+            int movingFlagged, int demotedTransparent, int tooThin, int tooSmall,
+            float minOccluderFaceSize, List<int> nonStatic)
         {
             if (problems == null) return;
 
@@ -152,6 +158,28 @@ namespace SideQuest.LightingTools.Occlusion
                 problems.Add(CodeNoOccluders, SqSeverity.Error,
                     "No renderer qualifies as an occluder, so a bake would produce data that culls nothing.")
                     .WithAction("Lower Minimum Occluder Face Size, or check that walls and floors are marked static and use opaque materials.");
+            }
+            else
+            {
+                // Occluders should be a small minority. If most of the scene is occluding,
+                // the threshold is too low and the bake will invent occlusion from props.
+                float share = (float)occluders / Mathf.Max(occludees, 1);
+                if (share > 0.5f)
+                {
+                    problems.Add(CodeTooManyOccluders, SqSeverity.Warn, string.Format(
+                        "{0} of {1} static renderers are occluding. Occluders should be a small set of large solid objects - when most of a scene occludes, Umbra fattens every one of them to the voxel grid and the accumulated phantom occlusion hides geometry the player is standing next to.",
+                        occluders, occludees))
+                        .WithAction("Raise Minimum Occluder Face Size, or Occluder Ceiling Fraction, until only walls, floors and large structural masses qualify.");
+                }
+            }
+
+            if (tooSmall > 0)
+            {
+                problems.Add(CodeSmallOccluder, SqSeverity.Info, string.Format(
+                    "{0} opaque renderer(s) were excluded from occluding because their largest face is under {1}m. They can still be culled; they just cannot cull others.",
+                    tooSmall, SqFormat.Num(minOccluderFaceSize)))
+                    .WithCount(tooSmall)
+                    .WithAction("This is usually right. Lower the threshold only if a genuinely room-blocking object was excluded.");
             }
 
             if (movingFlagged > 0)

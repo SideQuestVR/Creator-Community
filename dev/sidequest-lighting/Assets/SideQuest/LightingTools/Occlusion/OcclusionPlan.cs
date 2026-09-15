@@ -43,7 +43,7 @@ namespace SideQuest.LightingTools.Occlusion
         {
             var plan = new OcclusionPlan
             {
-                MinOccluderFaceSize = settings.minOccluderFaceSize,
+                MinOccluderFaceSize = ResolveFaceThreshold(scan, settings),
                 MinOccluderThickness = settings.minOccluderThickness
             };
 
@@ -52,6 +52,28 @@ namespace SideQuest.LightingTools.Occlusion
             plan.Parameters = OcclusionParameters.Solve(scan, decisions, problems);
 
             return plan;
+        }
+
+        /// <summary>
+        /// How large a face has to be before the object is allowed to occlude.
+        ///
+        /// Occluders should be a small set of big solid things - walls, floors, ceilings,
+        /// large structural masses. An absolute default cannot express that, because
+        /// "big" only means anything relative to the space: 1.5m is a wall in a corridor
+        /// and a crate in a warehouse.
+        ///
+        /// Sizing it against ceiling height gets the intent right in both. An occluder has
+        /// to block a room-sized sight line, so anything much shorter than the room is
+        /// furniture and should be culled rather than do the culling.
+        ///
+        /// Being too permissive here is what makes occlusion look broken: every marginal
+        /// prop becomes an occluder, Umbra fattens each one to the voxel grid, and the
+        /// accumulated phantom occlusion hides geometry the player is standing in front of.
+        /// </summary>
+        public static float ResolveFaceThreshold(SceneScan scan, SqSettings settings)
+        {
+            float fromCeiling = scan.Scale.CeilingHeightEstimate * Mathf.Max(settings.occluderCeilingFraction, 0f);
+            return Mathf.Max(settings.minOccluderFaceSize, fromCeiling);
         }
 
         public void Write(SqJsonWriter w, SceneScan scan, string reportId)

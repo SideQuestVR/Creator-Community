@@ -32,10 +32,24 @@ namespace SideQuest.LightingTools.Occlusion
             EditorGUILayout.LabelField("Classification", EditorStyles.boldLabel);
             EditorGUI.BeginChangeCheck();
 
+            EditorGUILayout.HelpBox(
+                "Occluders should be a small set of big solid objects - walls, floors, large structural masses. Everything else is an occludee: it gets culled, but does not cull others.",
+                MessageType.None);
+
             settings.minOccluderFaceSize = EditorGUILayout.Slider(
                 new GUIContent("Min occluder face (m)",
-                    "An object occludes only if its second-largest axis reaches this. Tests overall size instead and every thin wall - the best occluder there is - gets rejected."),
-                settings.minOccluderFaceSize, 0.1f, 10f);
+                    "Absolute floor on how large an occluder's second-largest axis must be. The effective threshold is the larger of this and the ceiling-fraction below."),
+                settings.minOccluderFaceSize, 0.1f, 20f);
+
+            settings.occluderCeilingFraction = EditorGUILayout.Slider(
+                new GUIContent("Occluder ceiling fraction",
+                    "Occluder size as a multiple of ceiling height. An occluder has to block a room-sized sight line, and 1.5m is a wall in a corridor but a crate in a warehouse - so the threshold scales with the space. Raise this if too much of the scene occludes."),
+                settings.occluderCeilingFraction, 0f, 2f);
+
+            settings.minOccluderThickness = EditorGUILayout.Slider(
+                new GUIContent("Min occluder thickness (m)",
+                    "Flatter geometry never occludes. Umbra fattens anything thinner than a voxel to fill one, which invents occlusion that is not in the geometry."),
+                settings.minOccluderThickness, 0f, 1f);
 
             settings.occlusionDataBudgetMB = EditorGUILayout.Slider(
                 new GUIContent("Data budget (MB)", "Umbra data size that triggers a warning. On Quest this is memory taken from everything else."),
