@@ -92,7 +92,7 @@ namespace SideQuest.LightingTools.LightProbes
 
                 bool wantsProbeLighting = plan.SmallObjectsReceiveFromProbes && extent < smallThreshold;
                 bool needsChange = !r.ContributeGI ||
-                    (wantsProbeLighting && r.Renderer != null && r.Renderer.receiveGI != ReceiveGI.LightProbes);
+                    (wantsProbeLighting && !ReceivesFromProbes(r.Renderer));
 
                 if (!needsChange) continue;
 
@@ -162,16 +162,49 @@ namespace SideQuest.LightingTools.LightProbes
 
                 GameObjectUtility.SetStaticEditorFlags(d.Renderer.GameObject, flags);
 
-                if (d.SetReceiveFromProbes && d.Renderer.Renderer != null)
-                {
-                    SqUndo.Modify(d.Renderer.Renderer, "Assign Receive GI");
-                    d.Renderer.Renderer.receiveGI = ReceiveGI.LightProbes;
-                }
+                if (d.SetReceiveFromProbes) SetReceivesFromProbes(d.Renderer.Renderer);
 
                 changed++;
             }
 
             return changed;
+        }
+
+        // Receive GI is not a plain Renderer property - it is an Editor-only serialized
+        // field, and which concrete Renderer subclass exposes it has moved between Unity
+        // versions. Reading and writing m_ReceiveGI directly works on any renderer and does
+        // not break when that moves again.
+        //
+        // Values follow UnityEngine.ReceiveGI: 1 = Lightmaps, 2 = Light Probes.
+        const int ReceiveGiLightmaps = 1;
+        const int ReceiveGiLightProbes = 2;
+        const string ReceiveGiProperty = "m_ReceiveGI";
+
+        static bool ReceivesFromProbes(Renderer renderer)
+        {
+            if (renderer == null) return false;
+
+            var so = new SerializedObject(renderer);
+            SerializedProperty property = so.FindProperty(ReceiveGiProperty);
+
+            // A renderer type without the field cannot be switched, so report it as already
+            // satisfied rather than proposing a change that would silently do nothing.
+            if (property == null) return true;
+
+            return property.intValue == ReceiveGiLightProbes;
+        }
+
+        static void SetReceivesFromProbes(Renderer renderer)
+        {
+            if (renderer == null) return;
+
+            var so = new SerializedObject(renderer);
+            SerializedProperty property = so.FindProperty(ReceiveGiProperty);
+            if (property == null) return;
+
+            SqUndo.Modify(renderer, "Assign Receive GI");
+            property.intValue = ReceiveGiLightProbes;
+            so.ApplyModifiedProperties();
         }
     }
 }

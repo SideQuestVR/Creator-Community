@@ -162,8 +162,7 @@ namespace SideQuest.LightingTools.Core
             // FindObjectsByType, not the deprecated FindObjectsOfType, and renderers
             // rather than every GameObject: the prior-art tool walked all GameObjects and
             // filtered afterwards, which is far more expensive on a large scene.
-            Renderer[] renderers = UnityEngine.Object.FindObjectsByType<Renderer>(
-                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Renderer[] renderers = UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include);
 
             var uniqueMaterials = new HashSet<int>();
 
@@ -205,8 +204,7 @@ namespace SideQuest.LightingTools.Core
 
         static void ScanLights(SceneScan scan)
         {
-            Light[] lights = UnityEngine.Object.FindObjectsByType<Light>(
-                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Light[] lights = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include);
 
             for (int i = 0; i < lights.Length; i++)
             {
@@ -232,8 +230,7 @@ namespace SideQuest.LightingTools.Core
 
         static void ScanExisting(SceneScan scan)
         {
-            LightProbeGroup[] groups = UnityEngine.Object.FindObjectsByType<LightProbeGroup>(
-                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            LightProbeGroup[] groups = UnityEngine.Object.FindObjectsByType<LightProbeGroup>(FindObjectsInactive.Include);
 
             for (int i = 0; i < groups.Length; i++)
             {
@@ -242,8 +239,7 @@ namespace SideQuest.LightingTools.Core
                 if (positions != null) scan.Existing.TotalProbePositions += positions.Length;
             }
 
-            ReflectionProbe[] probes = UnityEngine.Object.FindObjectsByType<ReflectionProbe>(
-                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            ReflectionProbe[] probes = UnityEngine.Object.FindObjectsByType<ReflectionProbe>(FindObjectsInactive.Include);
             scan.Existing.ReflectionProbes.AddRange(probes);
 
             LightmapData[] lightmaps = LightmapSettings.lightmaps;

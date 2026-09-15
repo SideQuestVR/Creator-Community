@@ -55,8 +55,7 @@ namespace SideQuest.LightingTools.LightProbes
 
         static LightProbeGroup FindGroup()
         {
-            LightProbeGroup[] groups = Object.FindObjectsByType<LightProbeGroup>(
-                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            LightProbeGroup[] groups = Object.FindObjectsByType<LightProbeGroup>(FindObjectsInactive.Include);
 
             for (int i = 0; i < groups.Length; i++)
                 if (groups[i].gameObject.name == ProbeGroupWriter.DefaultGroupName) return groups[i];

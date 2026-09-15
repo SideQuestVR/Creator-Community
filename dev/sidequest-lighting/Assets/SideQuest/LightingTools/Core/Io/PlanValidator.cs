@@ -1,6 +1,6 @@
 // SideQuest Lighting Tools - MIT
 using System;
-using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 namespace SideQuest.LightingTools.Core
@@ -226,7 +226,7 @@ namespace SideQuest.LightingTools.Core
         /// </summary>
         public static bool CheckSingleScene(PlanValidation validation)
         {
-            int loaded = EditorSceneManager.loadedSceneCount;
+            int loaded = SceneManager.loadedSceneCount;
             if (loaded <= 1) return true;
 
             validation.Reject(ErrMultiScene, string.Format(
