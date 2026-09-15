@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <title>Editor tools category illustration</title>
+  <desc>Original symbolic editor window and lighting controls. Not a screenshot of a plugin.</desc>
+  <rect width="960" height="540" fill="#090d10"/>
+  <rect x="210" y="94" width="540" height="328" rx="8" fill="#12191e" stroke="#52616a" stroke-width="2"/>
+  <path d="M210 140H750M580 140V422" stroke="#33414a" stroke-width="2"/>
+  <path d="M234 117H246M260 117H272M286 117H298" stroke="#7d919c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M240 357L405 253 552 344M261 370L409 275 530 355M285 384L410 299 507 368M310 397L413 323 484 383" fill="none" stroke="#293943" stroke-width="2"/>
+  <path d="M342 260L405 223 468 260V330L405 367 342 330Z" fill="#17262c" stroke="#7d919c" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M342 260L405 297 468 260M405 297V367" fill="none" stroke="#52616a" stroke-width="3"/>
+  <path d="M405 159V183M359 180L375 197M451 180L435 197" fill="none" stroke="#03bfd3" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="405" cy="211" r="10" fill="#03bfd3"/>
+  <path d="M610 203H716M610 269H716M610 335H716" stroke="#637681" stroke-width="3" stroke-linecap="round"/>
+  <path d="M638 191V215M687 257V281M654 323V347" stroke="#03bfd3" stroke-width="6" stroke-linecap="round"/>
+  <path d="M687 257V281" stroke="#ff4c61" stroke-width="6" stroke-linecap="round"/>
+  <text x="480" y="475" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="24" fill="#bac6cc">Editor tools</text>
+</svg>

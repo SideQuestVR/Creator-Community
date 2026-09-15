@@ -1,4 +1,11 @@
 {
   "schemaVersion": 1,
-  "entries": ["packages/egon-gb.start-location/0.0.0-review.1/listing.json"]
+  "entries": [
+    "packages/egon-gb.start-location/0.0.0-review.1/listing.json",
+    "packages/sidequest.light-bake-tools/1.0.0/listing.json",
+    "packages/sidequest.light-probe-tools/1.0.0/listing.json",
+    "packages/sidequest.lighting-core/1.0.0/listing.json",
+    "packages/sidequest.occlusion-tools/1.0.0/listing.json",
+    "packages/sidequest.reflection-probe-tools/1.0.0/listing.json"
+  ]
 }

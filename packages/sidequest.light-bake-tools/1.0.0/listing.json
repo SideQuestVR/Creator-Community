@@ -1,40 +1,36 @@
-﻿{
-    "$schema":  "../../../schemas/listing.schema.json",
-    "schemaVersion":  1,
-    "id":  "sidequest.light-bake-tools",
-    "version":  "1.0.0",
-    "name":  "SideQuest Light Bake Tools",
-    "category":  "community-tool",
-    "description":  "Solves a lightmap resolution that fits a chosen atlas budget instead of leaving you to find it by baking, validates that lightmapped meshes actually have lightmap UVs, and runs the bake in the background so the Editor stays usable.",
-    "author":  {
-                   "name":  "Elin",
-                   "url":  "https://github.com/Ladypoly"
-               },
-    "license":  "MIT",
-    "licensePath":  "packages/sidequest.light-bake-tools/1.0.0/LICENSE.txt",
-    "instructionsPath":  "packages/sidequest.light-bake-tools/1.0.0/README.md",
-    "sourceUrl":  "https://github.com/SideQuestVR/Creator-Community/tree/sidequest.light-bake-tools-v1.0.0/packages/sidequest.light-bake-tools/1.0.0/src",
-    "compatibility":  {
-                          "unity":  [
-                                        "6000.3.21f1"
-                                    ],
-                          "creatorSdk":  [
-
-                                         ],
-                          "banterSdk":  [
-
-                                        ]
-                      },
-    "dependencies":  [
-
-                     ],
-    "includesCode":  true,
-    "scope":  "editor-only",
-    "aiAssisted":  true,
-    "testNotes":  "Tested in the Unity Editor on 6000.3.21f1 with URP 17.3.0, against generated fixture scenes (a four-room interior with doorways, mixed glossy/transparent/alpha-clipped materials and a movable prop, plus a 25-room 830-renderer stress scene). The full four-tool pipeline was run end to end: probes placed, occlusion classified and baked, reflection probes placed, lightmaps baked, and regression checks run afterwards.\n\nCompiles cleanly against 6000.4.3f1 as well, but has not been exercised in the Editor on that version.\n\nNOT tested: in-headset behaviour, multiplayer, Banter or Creator SDK integration, or any world actually shipped as an AssetBundle. Settings that the Banter client\u0027s own URP asset controls - reflection probe blending, box projection, the light probe system and additional-light limits - are reported as advisory only, because a world author cannot set them. Occlusion culling is verified by static flags and umbra data size, not by confirming in Play Mode that hidden renderers report isVisible false.",
-    "download":  {
-                     "path":  "packages/sidequest.light-bake-tools/1.0.0/SideQuestLightBakeTools-1.0.0.unitypackage",
-                     "byteLength":  77822,
-                     "sha256":  "5c6e6f138f109ba78cb3580d3437f8959713934a334760fb0b631243f42d2d23"
-                 }
+{
+  "$schema": "../../../schemas/listing.schema.json",
+  "schemaVersion": 1,
+  "id": "sidequest.light-bake-tools",
+  "version": "1.0.0",
+  "name": "SideQuest Light Bake Tools",
+  "category": "community-tool",
+  "description": "Solves a lightmap resolution that fits a chosen atlas budget instead of leaving you to find it by baking, validates that lightmapped meshes actually have lightmap UVs, and runs the bake in the background so the Editor stays usable.",
+  "author": {
+    "name": "Elin",
+    "url": "https://github.com/Ladypoly"
+  },
+  "license": "MIT",
+  "licensePath": "packages/sidequest.light-bake-tools/1.0.0/LICENSE.txt",
+  "instructionsPath": "packages/sidequest.light-bake-tools/1.0.0/README.md",
+  "sourceUrl": "https://github.com/SideQuestVR/Creator-Community/tree/4bc43b9407e4e12a331d90bc05d7c8b0ff27447d/packages/sidequest.light-bake-tools/1.0.0/src",
+  "compatibility": {
+    "unity": [
+      "6000.3.21f1"
+    ],
+    "creatorSdk": [],
+    "banterSdk": []
+  },
+  "dependencies": [],
+  "includesCode": true,
+  "scope": "editor-only",
+  "aiAssisted": true,
+  "testNotes": "Contributor testing:\nTested in the Unity Editor on 6000.3.21f1 with URP 17.3.0, against generated fixture scenes (a four-room interior with doorways, mixed glossy/transparent/alpha-clipped materials and a movable prop, plus a 25-room 830-renderer stress scene). The full four-tool pipeline was run end to end: probes placed, occlusion classified and baked, reflection probes placed, lightmaps baked, and regression checks run afterwards.\n\nCompiles cleanly against 6000.4.3f1 as well, but has not been exercised in the Editor on that version.\n\nNOT tested: in-headset behaviour, multiplayer, Banter or Creator SDK integration, or any world actually shipped as an AssetBundle. Settings that the Banter client's own URP asset controls - reflection probe blending, box projection, the light probe system and additional-light limits - are reported as advisory only, because a world author cannot set them. Occlusion culling is verified by static flags and umbra data size, not by confirming in Play Mode that hidden renderers report isVisible false.\n\nIndependent maintainer check (2026-09-15): all five original archives imported and compiled in a disposable Unity 6000.3.21f1 / URP 17.3.0 project. Four Analyze/Accept/Apply workflows and five T2 regression checks passed. Baking, Undo/cancellation, other platforms and SDK/headset integration were not repeated in this pass. See dev/sidequest-lighting/MAINTAINER-REVIEW.md. Preview is category artwork, not a screenshot.",
+  "download": {
+    "path": "packages/sidequest.light-bake-tools/1.0.0/SideQuestLightBakeTools-1.0.0.unitypackage",
+    "byteLength": 77822,
+    "sha256": "5c6e6f138f109ba78cb3580d3437f8959713934a334760fb0b631243f42d2d23"
+  },
+  "previewImage": "assets/previews/editor-tools.png",
+  "reviewStatus": "listed"
 }
