@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "optic.water",
+  "version": "0.1.0",
+  "name": "OptiC's Water",
+  "category": "plugin",
+  "description": "URP water shader with animated normals, cubemap reflections and optional depth colouring and shoreline foam. Kijai and Cause — made for OptiC.",
+  "author": {
+    "name": "Kijai and Cause — made for OptiC"
+  },
+  "license": "World-build use and catalogue redistribution permitted",
+  "licensePath": "packages/optic.water/0.1.0/LICENSE-NOTES.md",
+  "instructionsPath": "packages/optic.water/0.1.0/README.md",
+  "compatibility": {
+    "unity": [
+      "Unity 6 / URP 17.x (author reported)"
+    ],
+    "creatorSdk": [],
+    "banterSdk": []
+  },
+  "dependencies": [
+    "Universal Render Pipeline 17.x"
+  ],
+  "includesCode": true,
+  "scope": "runtime",
+  "testNotes": "Maintainer check 2026-09-15: imported in disposable Unity 6000.3.21f1 / URP 17.3.0 project; Unity exited successfully, ShaderUtil reported zero shader import errors, Editor GPU support was true, and six material properties passed checks. Imported shader SHA-256 matches supplied source. Workshop inspection and package validation passed. Actual water rendering, Android builds, Quest, Creator SDK and Banter integration not independently tested. Original post reports Quest 2, Quest 3 and PC use. Preview is the supplied example screenshot, not our test scene.",
+  "contents": [
+    "Original unmodified shader",
+    "Setup and credit notes"
+  ],
+  "reviewStatus": "listed",
+  "previewImage": "packages/optic.water/0.1.0/preview.png",
+  "download": {
+    "path": "packages/optic.water/0.1.0/OpticsWater-0.1.0.unitypackage",
+    "byteLength": 21757,
+    "sha256": "1987d4d0b33e54101f2a0fc3155cc2a4c4ec2c37f139070aa0d0a8f527c1f88b"
+  }
+}
