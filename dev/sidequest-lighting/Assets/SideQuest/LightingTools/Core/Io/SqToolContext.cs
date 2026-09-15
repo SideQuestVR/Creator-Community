@@ -40,6 +40,7 @@ namespace SideQuest.LightingTools.Core
         public static SqToolContext Begin(string tool, string toolVersion, string action, bool needsGrid = true)
         {
             ReportPaths.EnsureDataFolders();
+            SqSettings.EnsurePersisted();
 
             var context = new SqToolContext { Tool = tool, ToolVersion = toolVersion };
             context.Problems = new SqProblemList();

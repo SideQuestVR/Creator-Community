@@ -129,6 +129,28 @@ namespace SideQuest.LightingTools.Core
             Save(true);
         }
 
+        /// <summary>
+        /// Writes the settings file if it does not exist yet.
+        ///
+        /// Without this the file only appeared once somebody moved a slider, so a project
+        /// that had only ever run Analyze had no settings file at all - nothing to inspect,
+        /// nothing to diff, and nothing to edit by hand or check into version control,
+        /// despite that being the entire reason these live in ProjectSettings.
+        ///
+        /// It also makes the values explicit rather than implied. A ScriptableSingleton
+        /// survives domain reloads in memory, so an instance created before a default
+        /// changed keeps the old value for the rest of the session while the source says
+        /// otherwise - which is confusing enough to debug once, let alone in someone
+        /// else's project.
+        /// </summary>
+        public static void EnsurePersisted()
+        {
+            const string path = "ProjectSettings/SideQuestLightingTools.asset";
+            if (System.IO.File.Exists(path)) return;
+
+            instance.Persist();
+        }
+
         void OnEnable()
         {
             SqLog.VerboseDetail = verboseDetail;
