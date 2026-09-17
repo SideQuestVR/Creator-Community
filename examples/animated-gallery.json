@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "galleries": [{
+    "id": "example.animation",
+    "items": [
+      { "type": "gif", "url": "assets/example/demo.gif", "poster": "assets/example/poster.png" },
+      { "type": "webm", "url": "assets/example/demo.webm", "poster": "assets/example/poster.png" }
+    ]
+  }]
+}
