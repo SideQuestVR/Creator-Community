@@ -28,7 +28,7 @@
   "scope": "both",
   "reviewStatus": "listed",
   "testNotes": "Maintainer check: Unity 6000.3.21f1 / URP 17.3.0 with ProBuilder 6.1.2. Scene opened; 515 objects, 409 renderers, zero missing scripts and zero missing/unsupported material slots after installing ProBuilder. Initial test without ProBuilder reported 814 missing script components. No scene save, rendered visual review, build or device test performed. Contributor reports Quest 2, Quest 3, PC VR and PC testing with no known issues.",
-  "previewImage": "https://cdn.sidequestvr.com/file/4601614/exec-2c2ae46f-45db-4572-8f46-df36ca7d8d43.png",
+  "previewImage": "packages/optic.warehouse-loft/0.1.0/preview-1440.jpg",
   "contents": [
     "Loft.unity scene",
     "Materials and textures",
