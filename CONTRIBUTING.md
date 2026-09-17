@@ -1,5 +1,9 @@
 # Share With SideQuest Creator Community
 
+Optional screenshot galleries and GIF/WebM previews use the separate
+[media.json contract](MEDIA.md). Keep each listing's `previewImage` as its
+static cover so older apps remain compatible.
+
 Contributions can be small. A useful prefab, graph, illustrated recipe or Editor
 helper is enough. MCP tools and AI skills are welcome too. Keep the submission
 focused on one reusable result.

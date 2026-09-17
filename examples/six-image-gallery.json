@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "galleries": [{
+    "id": "example.six-images",
+    "items": [
+      { "type": "image", "url": "assets/example/front.png" },
+      { "type": "image", "url": "assets/example/back.png" },
+      { "type": "image", "url": "assets/example/left.png" },
+      { "type": "image", "url": "assets/example/right.png" },
+      { "type": "image", "url": "assets/example/interior.png" },
+      { "type": "image", "url": "assets/example/detail.png" }
+    ]
+  }]
+}
