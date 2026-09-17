@@ -1,4 +1,14 @@
 {
   "schemaVersion": 1,
-  "downloads": []
+  "downloads": [
+    {
+      "id": "optic.warehouse-loft",
+      "version": "0.1.0",
+      "download": {
+        "url": "https://cdn.sidequestvr.com/file/4601616/optics-warehouse-loft-unity-urp-ver-6000321f1-prefab.unitypackage",
+        "byteLength": 93245650,
+        "sha256": "b9a99519a74bdbd5d75d997bed87118896c39a4d712b9ff708e63520ea4fdf94"
+      }
+    }
+  ]
 }

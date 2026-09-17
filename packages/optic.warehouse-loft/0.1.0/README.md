@@ -14,7 +14,7 @@ Without ProBuilder, the supplied scene reports 814 missing script components. In
 1. Create a fresh Unity **6000.3.21f1 Universal 3D (URP)** project.
 2. Open Unity's **Package Manager**, select **Unity Registry**, search for **ProBuilder**, and install it. To select the tested version explicitly, use **Install package by name**, enter `com.unity.probuilder`, and set version `6.1.2`.
 3. Wait for ProBuilder installation and script compilation to finish.
-4. Download and extract the ZIP. Import the enclosed `.unitypackage` through Unity's import dialog.
+4. In Creator Hub **0.1.7+**, select your project and use the listing's import action. Setup **0.3.1+** and MCP companion **2.7.2+** also support this package. Review and confirm Unity's import dialog. Older apps can download and extract the ZIP below, then import its `.unitypackage` manually.
 5. Open **Assets/Scenes/Loft.unity**.
 6. Save your own working copy after checking the scene. Customise it under the supplied terms.
 
@@ -23,7 +23,7 @@ Import into a fresh project first: the package uses generic Assets/Materials and
 The contributor reports Quest 2, Quest 3, PC VR and PC testing, with no known issues. Later Unity versions and device behaviour have not been independently verified here.
 
 ## Publication status
-The original ZIP is provided through the manual download link below. Extract it and import the enclosed unitypackage yourself; the listing does not offer automatic installation.
+Updated apps offer project import of the verified Unity package. The ZIP link below remains available for manual import and older apps.
 
 ## Manual download
 

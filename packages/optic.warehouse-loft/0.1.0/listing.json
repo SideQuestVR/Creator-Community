@@ -37,5 +37,5 @@
     "Unity Readme scripts"
   ],
   "sourceUrl": "https://cdn.sidequestvr.com/file/4601609/optics-warehouse-loft-unity-urp-ver-6000321f1-prefab.zip",
-  "usage": "REQUIRED: Install ProBuilder before importing. In a fresh Unity 6000.3.21f1 URP project, open Package Manager, select Unity Registry, search for ProBuilder and install it (tested: 6.1.2). Alternatively use Install package by name with com.unity.probuilder and version 6.1.2. Wait for installation and compilation to finish. Open Source to download the ZIP, extract it, and import the enclosed unitypackage. Then open Assets/Scenes/Loft.unity. Without ProBuilder this supplied scene has missing script components. Download and import are manual."
+  "usage": "Requires ProBuilder before import (tested 6.1.2). In a fresh Unity 6000.3.21f1 URP project, install com.unity.probuilder through Package Manager and wait for compilation. Update Creator Hub to 0.1.7 or newer (Setup 0.3.1 / MCP companion 2.7.2 or newer), select your project, and use the listing import action. Review and confirm the Unity import dialog, then open Assets/Scenes/Loft.unity. Older apps can use Source for manual ZIP download, extraction and import."
 }
