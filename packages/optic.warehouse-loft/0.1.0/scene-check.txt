@@ -1,0 +1,7 @@
+Scene opened: Assets/Scenes/Loft.unity
+Objects: 515
+Renderers: 409
+Missing scripts: 0
+Missing/unsupported materials: 0
+Dependencies: 43
+No scene saved; no runtime/headset test performed.
