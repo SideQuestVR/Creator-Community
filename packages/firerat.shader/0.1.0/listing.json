@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "name": "FireRatShader (Paid)",
   "category": "plugin",
-  "description": "Paid commercial Unity shader by FireRat for Built-in and URP. Purchase externally on Patreon. Open Full instructions for purchase and website links, or Source for the author’s GitHub documentation. No shader download is included here.",
+  "description": "A paid all-in-one Unity shader for Built-in and URP. Create realistic, toon, crystal and galaxy materials with effects including glowing AudioLink-reactive layers, dissolve, outlines, refraction and fur. Its material optimiser strips unused features for leaner builds. Designed by FireRat for desktop, VR and mobile projects. Purchase links are under Full instructions.",
   "author": {
     "name": "FireRat",
     "url": "https://github.com/FireRat666"
