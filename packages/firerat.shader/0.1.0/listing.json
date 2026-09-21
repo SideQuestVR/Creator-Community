@@ -28,5 +28,6 @@
   "scope": "instructions-only",
   "reviewStatus": "listed",
   "usage": "PAID: Open Full instructions for the Patreon purchase link and official website. Source opens GitHub documentation, not a free shader download. Purchase and install according to the author’s instructions.",
-  "testNotes": "Directory listing only. Author README identifies the product as commercial and confirms shader files are not in the public repository. No purchase, shader import, runtime, SDK or headset testing was performed by the catalogue maintainer."
+  "testNotes": "Directory listing only. Author README identifies the product as commercial and confirms shader files are not in the public repository. No purchase, shader import, runtime, SDK or headset testing was performed by the catalogue maintainer.",
+  "previewImage": "packages/firerat.shader/0.1.0/preview.png"
 }
