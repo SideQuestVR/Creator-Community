@@ -6,6 +6,20 @@
 
 # SideQuest Creator Community
 
+## Creator Plugins Retirement: 20 October 2026
+
+Creator Plugins is being retired from Creator Hub, Creator Works MCP and Project
+Setup. The retirement notice in updated Creator apps links to
+[creatorplugins.store](https://creatorplugins.store/) until **20 October 2026,
+00:00 UTC**. From that time it shows a retired notice without a store link,
+including while offline. New in-app catalogue downloads, Unity-menu installation
+and package imports are disabled in the retirement update.
+
+**Your existing assets and Unity projects are not deleted.** Existing downloads,
+package licences and historical repository files remain their own records.
+This does not retire MCP's scene, prefab, component or Visual Scripting tools.
+See [the retirement details](RETIREMENT.md), including older app versions.
+
 A community collection of recipes, prefabs, Visual Scripting graphs, plugins
 and reusable tools for SideQuest creators.
 
@@ -20,12 +34,13 @@ No Git, terminal or pull request experience needed. Sign in to GitHub to submit;
 a maintainer will help with the listing and PR. Not sure about versions or a
 licence? Say so in the form. Submissions and uploaded files are public.
 
-**Development status:** this branch prepares the catalogue for the shared
+**Historical integration:** this repository prepared the catalogue for the shared
 Creator Plugins page in Creator Hub, Creator Project Setup and Creator Works
 MCP. It is not a separate app. Start Location by Mr. E / egon.gb is the first
 maintainer-approved listing. See its licence and testing notes before importing.
 App features depend on the version installed; catalogue publication does not
-install or update an app.
+install or update an app. The retirement notice above supersedes the historical
+app-integration instructions below.
 
 ## Browse
 
